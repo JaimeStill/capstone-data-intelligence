@@ -8,32 +8,30 @@ task.run_auto_install = false
 "github:standards-lab/claude-plugins" = { version = "0.24.1", version_prefix = "marathon/v" }
 jq = "1.8.2"
 shellcheck = "0.11.0"
+uv = "0.13.10"
 
 [env]
 GO_MODULES = ""
+PEP723_SCRIPTS = "lib/generate.py"
 
 [tasks.check]
-description = "Validate the compose stack when one exists, shellcheck every script, then run lint-context and lint-references; writes nothing"
-run = '''
-set -eu
-cd "$MISE_PROJECT_ROOT"
-if [ -f compose.yml ]; then echo "check: compose"; docker compose config -q; fi
-scripts=$(git ls-files '*.sh')
-if [ -n "$scripts" ]; then echo "check: shellcheck"; shellcheck $scripts; fi
-fail=0
-for lint in lint-context lint-references; do
-  echo "check: $lint"
-  "$lint" || fail=1
-done
-exit "$fail"
-'''
+description = "Validate the compose stack when one exists, shellcheck every tracked sh or bash script, run lint-context and lint-references, run the shell tests, then check dataset/dataset.json when it exists; writes nothing"
+run = "bash scripts/check.sh"
+
+[tasks.dataset]
+description = "Run a dataset command: mise run dataset -- <group> <verb> [args...]; with no arguments, list the commands"
+run = "bin/dataset"
+
+[tasks."dataset:live"]
+description = "Run tree load, a second tree load, tree reset, and tree load against the Mikoshi at MIKOSHI_URL, asserting each step's counts and the tree it leaves; needs the stack up and Mikoshi running against its PostgreSQL on 5442, and mise run check never runs it"
+run = "bash scripts/dataset-live.sh"
 
 [tasks.currency]
-description = "Report every mise tool, action pin, image tag, Dockerfile FROM tag, and Dockerfile source ARG behind its latest, a held one with its reason; writes nothing"
+description = "Report every mise tool, PEP 723 script package, action pin, image tag, Dockerfile FROM tag, and Dockerfile source ARG behind its latest, a held one with its reason; writes nothing"
 run = "bash scripts/currency.sh report"
 
 [tasks.upgrade]
-description = "Bump the mise tools, action pins, image tags, Dockerfile FROM tags, and Dockerfile source ARGs to their latest, but a held one; rewrites mise.toml, the workflows, and the compose files"
+description = "Bump the mise tools, PEP 723 script packages, action pins, image tags, Dockerfile FROM tags, and Dockerfile source ARGs to their latest, but a held one; rewrites mise.toml, the scripts and their locks, the workflows, and the compose files"
 run = "bash scripts/currency.sh upgrade"
 
 [tasks."stack:up"]

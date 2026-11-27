@@ -1,0 +1,28 @@
+{
+  "title": "TDY travel request",
+  "unit": "Task Force LANTERN, S1",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-11-20",
+  "traveler": "TF LANTERN IO cell, planning representative",
+  "purpose": "Present Exercise QUIET HARBOR lessons learned at the 3rd Brigade information operations working group",
+  "destination": "Virginia Beach, VA",
+  "itinerary": {"depart": "2026-12-08", "return": "2026-12-11", "nights": 3, "travel_days": 2, "full_days": 2},
+  "rates_source": {
+    "file": "gsa-fy2027-per-diem",
+    "row": "VA, Virginia Beach, City of Virginia Beach, October 1, 2026 to May 31, 2027",
+    "lodging_rate": 129,
+    "mie_rate": 74
+  },
+  "estimate_usd": {
+    "lodging": {"basis": "3 nights x 129", "amount": 387.00},
+    "mie_travel_days": {"basis": "2 days x 75 percent of 74", "amount": 111.00},
+    "mie_full_days": {"basis": "2 days x 74", "amount": 148.00},
+    "transportation": {"basis": "government vehicle", "amount": 0.00},
+    "total": 646.00
+  },
+  "fund_cite": "Exercise training fund, fictional",
+  "approvals": [
+    {"role": "S1", "status": "reviewed"},
+    {"role": "Executive officer", "status": "pending"}
+  ]
+}

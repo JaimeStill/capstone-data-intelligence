@@ -1,0 +1,29 @@
+{
+  "title": "Product review: Ghosts in the Machine",
+  "unit": "Task Force LANTERN, S3 PSYOP section",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-07",
+  "product": {
+    "file": "ghosts-in-the-machine",
+    "type": "video, 1920x1080 MP4",
+    "source": "DVIDS 882019",
+    "credit": "4th Psychological Operations Group, SFC William Amaro",
+    "rights": "Public domain, US government work"
+  },
+  "reviewed_for": "Reference example for Team BEACON's radio and message board products, Exercise QUIET HARBOR",
+  "intended_audience": "Internal: PSYOP and information operations staff studying production technique",
+  "themes": [
+    "how PSYOP units build and test products",
+    "credibility of the messenger",
+    "matching the channel to the audience"
+  ],
+  "observations": [
+    "Shows the production workflow end to end; useful to brief new team members.",
+    "Long file; the analysis cell should cue segments rather than replay it whole."
+  ],
+  "action_items": [
+    {"owner": "Team BEACON", "task": "List two techniques to adapt for Kestrel Bay corrections", "due": "2026-03-11"},
+    {"owner": "S3 PSYOP", "task": "Cross-file a note in information-operations", "due": "2026-03-09", "status": "done"}
+  ],
+  "reviewer": "TF LANTERN S3 PSYOP NCOIC"
+}

@@ -68,6 +68,9 @@ content's SHA-256 in lowercase hex. `Name` is the document's file name, from Sub
 the upload's `Content-Disposition`. `Manifest` is set once the job completes.
 [`events.md`](events.md), "The manifest", defines what it counts and how a consumer checks it.
 
+The module also holds the prompt override Queries and Commands. `.bunrei` `prompts` chooses their
+shapes.
+
 ## Commands
 
 - **Submit** takes a whole document, its file name and media type, a profile, an optional
@@ -81,6 +84,12 @@ the upload's `Content-Disposition`. `Manifest` is set once the job completes.
   upload itself, including its offset, which a client reads from the upload's own HEAD.
 - **CancelJob** takes a job's ID and requests its cancellation. It returns nothing but an error;
   the outcome is read through GetJob. The job ends `cancelled` unless it has already ended.
+- **CreatePromptOverride** takes a profile, a stage, and a prompt, and stores them as an
+  override.
+- **ActivatePromptOverride** makes an override the active one for its profile and stage,
+  replacing any override active there before.
+- **DeactivatePromptOverride** deactivates an override, so its profile and stage return to the
+  profile's default prompt.
 
 ## Queries
 
@@ -88,6 +97,9 @@ the upload's `Content-Disposition`. `Manifest` is set once the job completes.
 - **GetOutput** takes the SHA-256 of an output a job's event names and streams that content. An
   event carries an output's SHA-256, never the content.
 - **ListProfiles** returns each profile Bunrei serves, with its resolved docinfer `Profile`.
+- **ListPromptOverrides** returns the stored prompt overrides, each with its profile, stage, and
+  whether it is active.
+- **GetPromptOverride** returns one stored prompt override.
 
 ## Settings
 
@@ -100,8 +112,17 @@ performance tunes.
 A request names a versioned processing profile from Bunrei's configuration, never a model. Each
 profile resolves to a docinfer pipeline, and ListProfiles returns that pipeline's `Profile`.
 
-The extraction spec is docinfer's `Extract`, and it is optional. Bunrei refuses one that marshals
-past 256 KiB, so the queued event that carries it stays within NATS's 1 MB `max_payload`.
+A profile's vision and transcription prompts in Bunrei's configuration are defaults. An active
+prompt override replaces each one, per profile and per stage: the stages are `vision` and
+`transcription`, and each pair has at most one active override. Only the prompts are
+overridable, not the sampling. Each attempt of a job uses the prompts active when that attempt
+starts, so a profile's name doesn't fix its prompts. A consumer that needs the prompts an attempt
+ran reads the resolved `Profile` in that attempt's `bunrei.job.started`
+([`events.md`](events.md), "Bunrei's job types").
+
+The extraction spec is docinfer's `Extract`, and it is optional. It is the caller's, per
+request, and no prompt override replaces it. Bunrei refuses one that marshals past 256 KiB, so
+the queued event that carries it stays within NATS's 1 MB `max_payload`.
 
 The extraction runs per source: once on each output text, image description, and transcript,
 never on metadata. `.bunrei` `document-extraction` plans two more scopes at docinfer's next
@@ -128,7 +149,7 @@ part of the protocol.
 `.bunrei` `api` builds the `client` module and Bunrei's routes against this note, and its client
 tests are the note's executable proof. A change to the protocol reaches:
 
-- `.bunrei`: `upload`, `document-extraction`, and `api`.
+- `.bunrei`: `upload`, `document-extraction`, `api`, and `prompts`.
 - `.mikoshi`: `browser-upload`, `items`, and `ingest`.
 - `.foundation`: [`events`](events.md), whose `started` carries the resolved `Profile`.
 - `.showcase`: `presentation`.

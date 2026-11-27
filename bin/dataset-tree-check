@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# dataset:summary=Validates the dataset definition, dataset/dataset.json unless one is given
+# `dataset tree check [definition]`: prints one line on stderr for each refusal, naming the entry
+# and what to change, and exits 1 if any; otherwise prints a one-line summary. Writes nothing and
+# needs no network. lib/tree.jq documents the definition's format.
+set -euo pipefail
+
+dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
+# shellcheck source=lib/dataset.sh
+source "$dir/../lib/dataset.sh"
+
+if (($# > 1)); then
+  dataset_usage_error "tree check takes at most one definition" "tree check [definition]"
+fi
+if (($# == 1)); then
+  dataset_tree_check "$1"
+else
+  dataset_tree_check "$dir/../dataset/dataset.json" dataset/dataset.json
+fi

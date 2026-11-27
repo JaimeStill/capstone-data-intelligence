@@ -1,0 +1,572 @@
+{
+  "contexts": [
+    {
+      "name": "tour",
+      "contexts": [
+        {
+          "name": "multilingual"
+        },
+        {
+          "name": "large-upload"
+        },
+        {
+          "name": "scan"
+        },
+        {
+          "name": "mail"
+        },
+        {
+          "name": "formats"
+        }
+      ]
+    },
+    {
+      "name": "share",
+      "contexts": [
+        {
+          "name": "psyops"
+        },
+        {
+          "name": "operations-planning",
+          "contexts": [
+            {
+              "name": "exercise-quiet-harbor"
+            }
+          ]
+        },
+        {
+          "name": "intelligence"
+        },
+        {
+          "name": "information-operations"
+        },
+        {
+          "name": "admin"
+        }
+      ]
+    },
+    {
+      "name": "views",
+      "contexts": [
+        {
+          "name": "video",
+          "filter": [
+            {
+              "field": "route",
+              "op": "eq",
+              "value": "video"
+            }
+          ]
+        },
+        {
+          "name": "audio",
+          "filter": [
+            {
+              "field": "route",
+              "op": "eq",
+              "value": "audio"
+            }
+          ]
+        },
+        {
+          "name": "images",
+          "filter": [
+            {
+              "field": "route",
+              "op": "in",
+              "value": [
+                "vision",
+                "vision-converted"
+              ]
+            }
+          ]
+        },
+        {
+          "name": "long-recordings",
+          "filter": [
+            {
+              "field": "route",
+              "op": "in",
+              "value": [
+                "audio",
+                "video"
+              ]
+            },
+            {
+              "field": "duration",
+              "op": "gt",
+              "value": 120
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "id": "eurlex-2011-833-en",
+      "name": "decision-2011-833-en.pdf",
+      "contexts": [
+        "tour/multilingual"
+      ],
+      "corpus": "pdf/multilang/eurlex-32011D0833/decision-2011-833-en.pdf"
+    },
+    {
+      "id": "eurlex-2011-833-bg",
+      "name": "decision-2011-833-bg.pdf",
+      "contexts": [
+        "tour/multilingual"
+      ],
+      "corpus": "pdf/multilang/eurlex-32011D0833/decision-2011-833-bg.pdf"
+    },
+    {
+      "id": "eurlex-2011-833-el",
+      "name": "decision-2011-833-el.pdf",
+      "contexts": [
+        "tour/multilingual"
+      ],
+      "corpus": "pdf/multilang/eurlex-32011D0833/decision-2011-833-el.pdf"
+    },
+    {
+      "id": "eurlex-2011-833-pl",
+      "name": "decision-2011-833-pl.pdf",
+      "contexts": [
+        "tour/multilingual"
+      ],
+      "corpus": "pdf/multilang/eurlex-32011D0833/decision-2011-833-pl.pdf"
+    },
+    {
+      "id": "digitally-signed-3d-portfolio",
+      "name": "digitally-signed-3d-portfolio.pdf",
+      "contexts": [
+        "tour/large-upload"
+      ],
+      "corpus": "pdf/edge/signed/digitally-signed-3d-portfolio.pdf"
+    },
+    {
+      "id": "old-scans-70",
+      "name": "old_scans-70.pdf",
+      "contexts": [
+        "tour/scan"
+      ],
+      "corpus": "pdf/scanned/olmocr-bench/old_scans-70.pdf"
+    },
+    {
+      "id": "japanese-msg",
+      "name": "05-japanese.msg",
+      "contexts": [
+        "tour/mail"
+      ],
+      "corpus": "email/generated/msg/05-japanese.msg"
+    },
+    {
+      "id": "example-heic",
+      "name": "example.heic",
+      "contexts": [
+        "tour/formats"
+      ],
+      "corpus": "image/formats/heic/example.heic"
+    },
+    {
+      "id": "handwriting-recognition-one",
+      "name": "handwriting_recognition.one",
+      "contexts": [
+        "tour/formats"
+      ],
+      "corpus": "onenote/onenote-rs/handwriting_recognition.one"
+    },
+    {
+      "id": "zip-in-zip",
+      "name": "zip-in-zip.zip",
+      "contexts": [
+        "tour/formats"
+      ],
+      "corpus": "archive/zip-in-zip.zip"
+    },
+    {
+      "id": "atp-3-53",
+      "name": "atp-3-53.pdf",
+      "contexts": [
+        "share/psyops"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN46327-ATP_3-53-000-WEB-1.pdf",
+      "sha256": "0740e058114779ea989c3b605293f904fdb1b292949dadb1343067b1f09beaa8",
+      "bytes": 6772048,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "leaflet-korea-1048",
+      "name": "leaflet-korea-1048.jpg",
+      "contexts": [
+        "share/psyops"
+      ],
+      "url": "https://archive.org/download/uskowarleaf1048/1048%20%28a%29.jpg",
+      "sha256": "41c225da1b5d4d5a2c0f1f1700e330adebab847acc679c400d8392b65647f8fa",
+      "bytes": 3181750,
+      "credit": "US Korean War leaflet 1048; Hollen Song collection, scanned to the Internet Archive; Public Domain Mark 1.0"
+    },
+    {
+      "id": "leaflet-iraq-iz-d002",
+      "name": "leaflet-iraq-iz-d002.jpg",
+      "contexts": [
+        "share/psyops"
+      ],
+      "url": "https://archive.org/download/coalitionleafizd002/IZ%20D002%20%28A%29.jpg",
+      "sha256": "c5624e89a18597f1de3402d9fcec8e639e1f24714111fd75f9ab594966bcf77e",
+      "bytes": 4472645,
+      "credit": "Coalition leaflet IZ D002, Iraq; Hollen Song collection, scanned to the Internet Archive; Public Domain Mark 1.0"
+    },
+    {
+      "id": "leaflet-afghanistan-afc01aahb1000",
+      "name": "leaflet-afghanistan-afc01aahb1000.jpg",
+      "contexts": [
+        "share/psyops"
+      ],
+      "url": "https://archive.org/download/uspropafc01aahb1000/AFC01aaHB1000%20%28A%29.jpg",
+      "sha256": "e793c61385946fabd2c12caf4a0752f4591faf63505fd4ede16c793fb3faae31",
+      "bytes": 6153675,
+      "credit": "US leaflet AFC01aaHB1000, Afghanistan; Hollen Song collection, scanned to the Internet Archive; Public Domain Mark 1.0"
+    },
+    {
+      "id": "ghosts-in-the-machine",
+      "name": "ghosts-in-the-machine-1920x1080.mp4",
+      "contexts": [
+        "share/psyops",
+        "share/information-operations"
+      ],
+      "corpus": "video/dvids-ghosts-in-the-machine/ghosts-in-the-machine-1920x1080.mp4"
+    },
+    {
+      "id": "perceptions-are-reality",
+      "name": "perceptions-are-reality.pdf",
+      "contexts": [
+        "share/psyops",
+        "share/information-operations"
+      ],
+      "url": "https://www.govinfo.gov/content/pkg/GOVPUB-D110-PURL-gpo116192/pdf/GOVPUB-D110-PURL-gpo116192.pdf",
+      "sha256": "c7758d1bde2149d72e5ee9b60b33a62943d1614333c8bf4df33fbe0ef3bcfe25",
+      "bytes": 8366093,
+      "credit": "Army University Press, via GovInfo; US government work, public domain"
+    },
+    {
+      "id": "ghost-tape-no-10",
+      "name": "ghost-tape-no-10.ogg",
+      "contexts": [
+        "share/psyops"
+      ],
+      "live": true,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8d/Operation_Wandering_Soul_Vietnam_War_%28Ghost_Tape_Number_10%29_-_Record_by_US_military.ogg",
+      "sha256": "8247643775e92d4f51b0bada3d829dda7f7a279f5610920dbcfe256e48cb75a7",
+      "bytes": 3228201,
+      "credit": "Wikimedia Commons, PD-USGov-Military; uploaded from a YouTube copy, not a NARA original"
+    },
+    {
+      "id": "fm-5-0",
+      "name": "fm-5-0.pdf",
+      "contexts": [
+        "share/operations-planning"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN44590-FM_5-0-001-WEB-3.pdf",
+      "sha256": "d1b5d0e660fd9373954dda356dbbd4f23dcf1d5d173755bb2c9cc95b9d76c774",
+      "bytes": 15351895,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "atp-5-0-1",
+      "name": "atp-5-0-1.pdf",
+      "contexts": [
+        "share/operations-planning"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN45023-ATP_5-0.1-001-WEB-3.pdf",
+      "sha256": "686ba98f8e4b55d8855d21100135e2cafa7ca959835fe64fbd453422d97107c1",
+      "bytes": 4609084,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "call-15-06",
+      "name": "call-15-06.pdf",
+      "contexts": [
+        "share/operations-planning"
+      ],
+      "url": "https://www.govinfo.gov/content/pkg/GOVPUB-D101-PURL-gpo126158/pdf/GOVPUB-D101-PURL-gpo126158.pdf",
+      "sha256": "775ac195ae0dc5d31f9b9d2fbca6179a18bb97172436ba79025793d408cdfe2e",
+      "bytes": 1854221,
+      "credit": "Center for Army Lessons Learned, via GovInfo; US government work"
+    },
+    {
+      "id": "opord-26-03-v1",
+      "name": "opord-26-03-v1.docx",
+      "contexts": [
+        "share/operations-planning/exercise-quiet-harbor"
+      ],
+      "generated": "opord-26-03-v1.docx",
+      "sha256": "16a9b5e6a3d944e38672ef895c0481668644cc1d570f4390b260d5534f6c5aea"
+    },
+    {
+      "id": "opord-26-03-v2",
+      "name": "opord-26-03-v2.docx",
+      "contexts": [
+        "share/operations-planning/exercise-quiet-harbor"
+      ],
+      "live": true,
+      "supersedes": "opord-26-03-v1",
+      "generated": "opord-26-03-v2.docx",
+      "sha256": "332762671109b898d329a6d2be3083ade4246d0cc7645dfb43b47c44074c90b1"
+    },
+    {
+      "id": "mission-analysis-brief",
+      "name": "mission-analysis-brief.pptx",
+      "contexts": [
+        "share/operations-planning/exercise-quiet-harbor"
+      ],
+      "generated": "mission-analysis-brief.pptx",
+      "sha256": "0ece384c5bf8dcb2259d77f703ccf7f7333b2c258efcd1a1094bb8b2734a6392"
+    },
+    {
+      "id": "fm-2-0",
+      "name": "fm-2-0.pdf",
+      "contexts": [
+        "share/intelligence"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN47897-FM_2-0-000-WEB-2.pdf",
+      "sha256": "0d3d33a7b638bc0977256513a936da692ca01b5c6363f589d08a2f32b8a0786a",
+      "bytes": 13698481,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "sailing-the-sea-of-osint",
+      "name": "sailing-the-sea-of-osint.pdf",
+      "contexts": [
+        "share/intelligence"
+      ],
+      "url": "https://www.cia.gov/resources/csi/static/Sailing-the-Sea-OSINT.pdf",
+      "sha256": "4e37026dc1fcd0763712ed9f29ff6329b501f8b0996fe0c9f3709bcd287c139a",
+      "bytes": 198571,
+      "credit": "CIA Center for the Study of Intelligence; US government work"
+    },
+    {
+      "id": "tradecraft-primer",
+      "name": "tradecraft-primer.pdf",
+      "contexts": [
+        "share/intelligence"
+      ],
+      "url": "https://www.cia.gov/resources/csi/static/955180a45afe3f5013772c313b16face/Tradecraft-Primer-apr09.pdf",
+      "sha256": "48fe6cd5ef2cb9779db5bf1665386e5163b044b325eabe6be3dedfbaf422d52e",
+      "bytes": 808654,
+      "credit": "Central Intelligence Agency; US government work"
+    },
+    {
+      "id": "ic-osint-strategy",
+      "name": "ic-osint-strategy.pdf",
+      "contexts": [
+        "share/intelligence"
+      ],
+      "url": "https://www.dni.gov/files/ODNI/documents/IC_OSINT_Strategy.pdf",
+      "sha256": "bfd858787b4feac54376b475ee26b7d6e0beb4fda57cb66182a8b46404f826bc",
+      "bytes": 1056448,
+      "credit": "Office of the Director of National Intelligence; US government work"
+    },
+    {
+      "id": "collection-plan",
+      "name": "collection-plan.xlsx",
+      "contexts": [
+        "share/intelligence",
+        "share/operations-planning/exercise-quiet-harbor"
+      ],
+      "generated": "collection-plan.xlsx",
+      "sha256": "1e1f4b34b062c23776a372c3d4feb36997ae720fa2e57613245192a262f8e3c5"
+    },
+    {
+      "id": "dodm-5200-01-vol-2",
+      "name": "dodm-5200-01.pdf",
+      "contexts": [
+        "share/intelligence",
+        "share/admin"
+      ],
+      "corpus": "pdf/born-digital/dodm-5200-01.pdf"
+    },
+    {
+      "id": "adp-3-13",
+      "name": "adp-3-13.pdf",
+      "contexts": [
+        "share/information-operations"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN39736-ADP_3-13-000-WEB-1.pdf",
+      "sha256": "dcc1dc22dde3b855bfeba575f8a8b0725345c40a90f6135d0b11a758e25bfc04",
+      "bytes": 4375074,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "fm-3-13",
+      "name": "fm-3-13.pdf",
+      "contexts": [
+        "share/information-operations"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/pdf/web/FM%203-13%20FINAL%20WEB.pdf",
+      "sha256": "cc54e09517469b3ebc5544f66cbf4aa133c84b610667a8e350b448b5c53f1357",
+      "bytes": 8897797,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "kuehl-ndu-io",
+      "name": "kuehl-ndu-io.pdf",
+      "contexts": [
+        "share/information-operations"
+      ],
+      "url": "https://ndia.dtic.mil/wp-content/uploads/2011/SOLIC/Weds3Kuehl.pdf",
+      "sha256": "c3ecf337919c2e17976ac81fe359052971d66cfcb22366fb7a941b47640f7a80",
+      "bytes": 2239696,
+      "credit": "Dan Kuehl, National Defense University; hosted by NDIA"
+    },
+    {
+      "id": "bush-speech-2001-09-12",
+      "name": "George_W._Bush_Speech_-_September_12,_2001.ogg",
+      "contexts": [
+        "share/information-operations"
+      ],
+      "corpus": "audio/wikimedia-commons/George_W._Bush_Speech_-_September_12,_2001.ogg"
+    },
+    {
+      "id": "duck-and-cover-two-audio",
+      "name": "duck-and-cover-two-audio.mkv",
+      "contexts": [
+        "share/information-operations"
+      ],
+      "corpus": "video/prelinger-duck-and-cover/duck-and-cover-two-audio.mkv"
+    },
+    {
+      "id": "tc-7-0-2",
+      "name": "tc-7-0-2.pdf",
+      "contexts": [
+        "share/admin"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN43926-TC_7-0.2-000-WEB-1.pdf",
+      "sha256": "84fdc0286437c7d73b385212013e2eace151940006bd4248f0112bee9892153a",
+      "bytes": 1806878,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "ar-25-50",
+      "name": "ar-25-50.pdf",
+      "contexts": [
+        "share/admin"
+      ],
+      "url": "https://armypubs.army.mil/epubs/DR_pubs/DR_a/ARN42124-AR_25-50-007-WEB-13.pdf",
+      "sha256": "870459418a92029d57611e908506552acc91a65bdf1d19f3070f6b1ce4c3e7a8",
+      "bytes": 4005232,
+      "credit": "Army Publishing Directorate; Distribution A: approved for public release, distribution unlimited"
+    },
+    {
+      "id": "gsa-fy2027-per-diem",
+      "name": "gsa-fy2027-per-diem.xlsx",
+      "contexts": [
+        "share/admin"
+      ],
+      "url": "https://www.gsa.gov/system/files/FY2027_PerDiemRates_Validated090126.xlsx",
+      "sha256": "818af7d0e568228804f6e8d3d475504cf0c22562544f4d808509fc4aa8790618",
+      "bytes": 37380,
+      "credit": "General Services Administration; US government work"
+    }
+  ],
+  "records": [
+    {
+      "id": "leaflet-catalog",
+      "annotates": [
+        "leaflet-korea-1048",
+        "leaflet-iraq-iz-d002",
+        "leaflet-afghanistan-afc01aahb1000"
+      ],
+      "contexts": [
+        "share/psyops"
+      ]
+    },
+    {
+      "id": "ghosts-product-review",
+      "annotates": [
+        "ghosts-in-the-machine"
+      ],
+      "contexts": [
+        "share/psyops"
+      ]
+    },
+    {
+      "id": "ghost-tape-provenance",
+      "annotates": [
+        "ghost-tape-no-10"
+      ],
+      "contexts": [
+        "share/psyops"
+      ]
+    },
+    {
+      "id": "opord-26-03-change-log",
+      "annotates": [
+        "opord-26-03-v1",
+        "opord-26-03-v2"
+      ],
+      "contexts": [
+        "share/operations-planning/exercise-quiet-harbor"
+      ]
+    },
+    {
+      "id": "osint-source-register",
+      "annotates": [
+        "fm-2-0",
+        "sailing-the-sea-of-osint",
+        "tradecraft-primer",
+        "ic-osint-strategy",
+        "collection-plan"
+      ],
+      "contexts": [
+        "share/intelligence"
+      ]
+    },
+    {
+      "id": "io-case-study-index",
+      "annotates": [
+        "perceptions-are-reality",
+        "bush-speech-2001-09-12",
+        "duck-and-cover-two-audio"
+      ],
+      "contexts": [
+        "share/information-operations"
+      ]
+    },
+    {
+      "id": "marking-guidance-memo",
+      "annotates": [
+        "dodm-5200-01-vol-2",
+        "ar-25-50"
+      ],
+      "contexts": [
+        "share/admin",
+        "share/intelligence"
+      ]
+    },
+    {
+      "id": "tdy-travel-request",
+      "annotates": [
+        "gsa-fy2027-per-diem"
+      ],
+      "contexts": [
+        "share/admin"
+      ]
+    }
+  ],
+  "live_steps": [
+    {
+      "op": "create",
+      "path": "share/intelligence/vlf-channel-shift"
+    },
+    {
+      "op": "rename",
+      "path": "share/information-operations",
+      "name": "information-advantage"
+    },
+    {
+      "op": "move",
+      "path": "share/operations-planning/exercise-quiet-harbor",
+      "parent": "share"
+    }
+  ]
+}

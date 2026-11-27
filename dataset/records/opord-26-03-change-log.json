@@ -1,0 +1,37 @@
+{
+  "title": "OPORD 26-03 change log, draft to Revision 1",
+  "unit": "Task Force LANTERN, S3 Plans",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "exercise": "QUIET HARBOR",
+  "from": {"file": "opord-26-03-v1", "label": "DRAFT", "dated": "2026-03-06"},
+  "to": {"file": "opord-26-03-v2", "label": "REVISION 1", "dated": "2026-03-10"},
+  "changes": [
+    {
+      "paragraph": "2. Mission",
+      "was": "from 16 March to 27 March 2026",
+      "now": "from 14 March to 28 March 2026"
+    },
+    {
+      "paragraph": "3.c.(1) Team ANVIL",
+      "was": "report each new false report within four hours of first sighting",
+      "now": "report each new false report within two hours of first sighting"
+    },
+    {
+      "paragraph": "3.c.(2) Team BEACON",
+      "was": "prepare corrections and deliver them through both radio stations",
+      "now": "prepare corrections with the Provincial Information Office and deliver them through both radio stations and the community message board"
+    },
+    {
+      "paragraph": "3.d. Coordinating instructions",
+      "was": "Rehearsal at 1400 on 14 March",
+      "now": "Rehearsal at 1000 on 12 March"
+    },
+    {
+      "paragraph": "5.b. Signal",
+      "was": "Primary FM radio on the task force net; alternate cell phone; emergency runner",
+      "now": "Primary task force secure chat; alternate FM radio on the task force net; contingency cell phone; emergency runner; brevity codes change daily at 0001"
+    }
+  ],
+  "unchanged": ["1. Situation", "3.a. Commander's intent", "3.b. Concept of operations", "3.c.(3) Analysis cell", "4. Sustainment", "5.a. Command"],
+  "status": "Revision 1 is current; the draft is superseded"
+}

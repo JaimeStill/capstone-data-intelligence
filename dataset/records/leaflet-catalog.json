@@ -1,0 +1,48 @@
+{
+  "title": "Leaflet reference catalog",
+  "unit": "Task Force LANTERN, S3 PSYOP section",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-04",
+  "purpose": "Historical leaflet examples for Exercise QUIET HARBOR product development. Translations are as stated on each item's Internet Archive page; none has been checked by a unit linguist.",
+  "leaflets": [
+    {
+      "file": "leaflet-korea-1048",
+      "number": "1048",
+      "campaign": "US propaganda leaflet, Korean War",
+      "theater": "Korea, 1950s",
+      "language": "Korean",
+      "translation": {
+        "source": "psywarrior.com, as quoted on the archive page",
+        "front": "Why should I walk on the road of death in this attack?",
+        "back": "Why did our officers deceive us about the dreadful power of the U.N. air planes, tank and artillery? Why did they beat the drums of battle so loud to block my ears from hearing the crying of my wife and children? Why can't I be allowed to survive to see my loving family? Why am I still alive and unable to meet my beloved comrades?"
+      },
+      "themes": ["futility of resistance", "family"]
+    },
+    {
+      "file": "leaflet-iraq-iz-d002",
+      "number": "IZ D002",
+      "campaign": "Coalition leaflet dropped during the 2003 invasion of Iraq",
+      "theater": "Iraq, dated 2002 on the archive page",
+      "language": "Arabic",
+      "translation": {
+        "source": "archive page",
+        "front_and_back": "Information Radio, 1800-2300 daily; 756 kHz AM, 693 kHz AM, 9715 kHz SW, 11292 kHz SW, 100.4 MHz FM"
+      },
+      "themes": ["drive audience to a broadcast channel"]
+    },
+    {
+      "file": "leaflet-afghanistan-afc01aahb1000",
+      "number": "AFC01aaHB1000",
+      "campaign": "US leaflet distributed in Afghanistan",
+      "theater": "Afghanistan, about 2006 to 2007",
+      "language": "Pashto per the archive subjects; the archive language field reads Persian. Unit linguist review pending",
+      "translation": {
+        "source": "archive page",
+        "front": "The Islamic Republic of Afghanistan",
+        "back": "Your children are waiting for you. For peace, stability and a bright future."
+      },
+      "themes": ["family", "stability"]
+    }
+  ],
+  "rights": "All three scans: Hollen Song collection, Internet Archive, Public Domain Mark 1.0"
+}

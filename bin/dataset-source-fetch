@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# dataset:summary=Fetches and verifies every file of the dataset definition into dataset/.cache/
+# `dataset source fetch [definition]`: fills the cache, dataset/.cache/ unless DATASET_CACHE names
+# another, with each file of dataset/dataset.json, or of the definition given, stored under its
+# sha256 once it verifies; prints a line per file and a summary, and exits 1 unless every file is
+# in the cache and verified. Needs curl, git, jq, and sha256sum, the docs-corpus checkout
+# DOCS_CORPUS names for a corpus file, and uv for a generated one. lib/source.sh documents each
+# provenance's fetch.
+set -euo pipefail
+
+dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
+# shellcheck source=lib/dataset.sh
+source "$dir/../lib/dataset.sh"
+
+if (($# > 1)); then
+  dataset_usage_error "source fetch takes at most one definition" "source fetch [definition]"
+fi
+if (($# == 1)); then
+  dataset_source_fetch "$1"
+else
+  dataset_source_fetch "$dir/../dataset/dataset.json" dataset/dataset.json
+fi

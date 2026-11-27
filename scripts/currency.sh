@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # currency reports, or upgrades, every pin that trails its latest release: the mise tools, each Go
-# module's go directive and direct requirements, the workflows' action pins, the image lines of
+# module's go directive and direct requirements, each PEP 723 script's package pins, which its
+# `uv lock --script` lock follows, the workflows' action pins, the image lines of
 # the compose files and workflows, each compose Dockerfile's FROM tag, and each compose
 # Dockerfile's `ARG <NAME>_VERSION` whose `ADD` fetches a GitHub repository at
 # `v${<NAME>_VERSION}`, compared with that repository's highest semver tag. Both modes run the same
@@ -69,6 +70,11 @@ trailing_go_directive() {
 	if [ "$minor" != "$go_minor" ]; then
 		echo "go $minor $go_minor"
 	fi
+}
+
+outdated_script_packages() {
+	uv tree -q --script "$1" --outdated --depth 0 --locked |
+		sed -n 's/^\([^ ]*\) v\([^ ]*\) (latest: v\([^)]*\))$/\1 \2 \3/p'
 }
 
 outdated_actions() {
@@ -186,6 +192,16 @@ report_go_modules() {
 	done
 }
 
+report_script_packages() {
+	local script scanned name pinned latest
+	for script in $PEP723_SCRIPTS; do
+		scanned=$(outdated_script_packages "$script") || return
+		while read -r name pinned latest; do
+			if [ -n "$name" ]; then trailing "$script" "$name" "$pinned" "$latest"; fi
+		done <<<"$scanned"
+	done
+}
+
 report_actions() {
 	local scanned name pinned latest
 	scanned=$(outdated_actions) || return
@@ -269,6 +285,22 @@ upgrade_go_modules() {
 	done
 }
 
+upgrade_script_packages() {
+	local script scanned name pinned latest
+	for script in $PEP723_SCRIPTS; do
+		scanned=$(outdated_script_packages "$script") || return
+		while read -r name pinned latest; do
+			if [ -z "$name" ] || [ -n "$(held "$name" "$pinned")" ]; then
+				continue
+			fi
+			echo "upgrade: $script: $name $pinned -> $latest"
+			sed -i "1,/^# \/\/\/\$/s/\"$name==$pinned\"/\"$name==$latest\"/" "$script"
+		done <<<"$scanned"
+		uv lock -q --script "$script"
+		uv lock -q --script "$script" --check
+	done
+}
+
 upgrade_actions() {
 	local scanned name pinned latest key
 	scanned=$(outdated_actions) || return
@@ -332,6 +364,7 @@ go_minor=$(mise latest go | cut -d. -f1,2)
 if [ "$action" = report ]; then
 	report_mise_tools
 	report_go_modules
+	report_script_packages
 	report_actions
 	report_image_lines
 	report_dockerfile_bases
@@ -340,6 +373,7 @@ if [ "$action" = report ]; then
 fi
 upgrade_mise_tools
 upgrade_go_modules
+upgrade_script_packages
 upgrade_actions
 upgrade_image_lines
 upgrade_dockerfile_bases

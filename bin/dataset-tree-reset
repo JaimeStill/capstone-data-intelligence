@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# dataset:summary=Deletes the definition's top-level contexts and their subtrees from Mikoshi
+# `dataset tree reset [definition]`: deletes each top-level context dataset/dataset.json, or the
+# definition given, declares from Mikoshi at MIKOSHI_URL, with everything under it, and leaves
+# every other context as it is, so the next `dataset tree load` rebuilds the tree; prints a line
+# per top-level context and a summary, and exits 1 if Mikoshi refuses or can't be reached. Needs
+# curl and jq. lib/tree.sh documents the reset.
+set -euo pipefail
+
+dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
+# shellcheck source=lib/dataset.sh
+source "$dir/../lib/dataset.sh"
+
+if (($# > 1)); then
+  dataset_usage_error "tree reset takes at most one definition" "tree reset [definition]"
+fi
+if (($# == 1)); then
+  dataset_tree_reset "$1"
+else
+  dataset_tree_reset "$dir/../dataset/dataset.json" dataset/dataset.json
+fi
