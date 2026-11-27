@@ -5,7 +5,6 @@
 # shellcheck source=tests/mikoshi.sh
 source "$(dirname "$0")/mikoshi.sh"
 
-# Runs scripts/dataset-live.sh with the arguments given, as run does.
 run_live() {
   run "$repo/scripts/dataset-live.sh" "$@"
 }

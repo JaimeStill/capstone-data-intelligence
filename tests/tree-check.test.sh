@@ -7,8 +7,6 @@ source "$(dirname "$0")/lib.sh"
 
 valid=$repo/tests/tree
 
-# Copies the valid definition and its records to the fixture directory, applying the jq edit
-# given to the definition: write_fixture <jq program>.
 write_fixture() {
   fixture=$tmp/fixture/dataset.json
   mkdir -p "$tmp/fixture"
@@ -16,8 +14,6 @@ write_fixture() {
   jq "$1" "$valid/dataset.json" >"$fixture"
 }
 
-# Runs dataset tree check on the fixture and asserts it refuses with exactly the refusals given,
-# one an argument, each "<entry>: <message>": assert_refuses <refusal>...
 assert_refuses() {
   local refusal expected=()
   run_dataset tree check "$fixture"

@@ -6,7 +6,6 @@ source "$(dirname "$0")/lib.sh"
 
 definition=$repo/dataset/dataset.json
 
-# Prints the number of the definition's entries the jq filter given selects: count <filter>.
 count() {
   jq "[$1] | length" "$definition"
 }

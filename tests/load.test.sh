@@ -4,7 +4,6 @@
 # shellcheck source=tests/mikoshi.sh
 source "$(dirname "$0")/mikoshi.sh"
 
-# Prints the number of creates the stub received.
 creates() {
   calls | grep -c -- '-X POST'
 }

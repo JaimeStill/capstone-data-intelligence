@@ -10,9 +10,6 @@ sha() {
   printf '%s' "$1" | sha256sum | cut -d' ' -f1
 }
 
-# Writes the fixture: the definition (definition), the curl stub's served bytes, the fake
-# docs-corpus checkout, the generator stub, and the cache (cache), applying the jq edit given, if
-# any, to the definition: write_fixture [jq program].
 write_fixture() {
   definition=$tmp/fixture/dataset.json
   cache=$tmp/cache
@@ -62,7 +59,6 @@ manual_entry='.files += [{id: "manual-d", name: "d.jpg", contexts: ["tour"],
   manual: ["Open the archive", "Download the full-size scan"],
   sha256: "'$(sha delta)'", bytes: 5, credit: "Harbor Archive"}]'
 
-# Prints the cache's entries, one a line, sorted, with any scratch left behind.
 cache_entries() {
   find "$cache" -mindepth 1 -printf '%P\n' | sort
 }
