@@ -342,3 +342,37 @@ def record_ids:
 def tree_summary:
   "\(declared | length) contexts, \(list("files") | length) files,"
   + " \(list("records") | length) records, \(list("live_steps") | length) live steps";
+
+# The declared contexts under the path given, as a list of names, each before its children, as
+# {path, parent, name, kind, filter}: parent is the path above, empty at the top, and filter is
+# null on an explicit context.
+def load_nodes($prefix):
+  if type == "array" then
+    .[] | objects | select(.name | name_ok) | ($prefix + [.name]) as $path
+    | {path: ($path | join("/")), parent: ($prefix | join("/")), name,
+       kind: (if has("filter") then "query" else "explicit" end), filter: (.filter // null)},
+      (select(has("filter") | not) | .contexts | load_nodes($path))
+  else empty end;
+
+# The rows of the load, one a declared context in load_nodes's order: its path, parent path, name,
+# kind, and filter as JSON, separated by the unit separator, \u001f.
+def load_rows:
+  .contexts | load_nodes([]) | [.path, .parent, .name, .kind, (.filter | tojson)] | join("\u001f");
+
+# The input filter in one form for every filter of the same conditions: each condition without a
+# null value, an in's values sorted and unique, and the conditions sorted and unique.
+def filter_form:
+  if type == "array" then
+    map(objects | with_entries(select(.value != null))
+        | if .op == "in" and (.value | type) == "array" then .value |= unique else . end)
+    | unique
+  else . end;
+
+# How the input context, as Mikoshi reads it, differs from the kind and filter the definition
+# declares for it: empty when it doesn't, otherwise what it is and what the definition declares.
+def context_difference($kind; $filter):
+  if .kind != $kind then
+    "exists with kind \(.kind), the definition declares kind \($kind)"
+  elif (.filter | filter_form) != ($filter | filter_form) then
+    "exists with filter \(.filter | tojson), the definition declares \($filter | tojson)"
+  else empty end;

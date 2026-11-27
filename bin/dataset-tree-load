@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# dataset:summary=Builds the definition's context tree in Mikoshi, creating only what is missing
+# `dataset tree load [definition]`: creates each context dataset/dataset.json, or the definition
+# given, declares and Mikoshi at MIKOSHI_URL lacks, and leaves every existing one as it is; prints
+# a line per context and a summary, and exits 1 if an existing context differs from its
+# declaration or Mikoshi refuses or can't be reached. Needs curl and jq. lib/tree.sh documents
+# the load.
+set -euo pipefail
+
+dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
+# shellcheck source=lib/dataset.sh
+source "$dir/../lib/dataset.sh"
+
+if (($# > 1)); then
+  dataset_usage_error "tree load takes at most one definition" "tree load [definition]"
+fi
+if (($# == 1)); then
+  dataset_tree_load "$1"
+else
+  dataset_tree_load "$dir/../dataset/dataset.json" dataset/dataset.json
+fi
