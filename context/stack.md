@@ -42,6 +42,8 @@ version, beside the root's tools, and `mise run upgrade` bumps them.
   SeaweedFS creates no bucket on first write.
 - NATS keeps its default 1 MB `max_payload`, which [`events.md`](events.md), "Result batches", and
   [`protocol.md`](protocol.md), "Profiles and extraction", size against.
+- NATS serves its monitoring endpoint on the container's loopback only (`127.0.0.1:8222`), for
+  the health check; neither the host nor the other containers reach it.
 - NATS opens no WebSocket listener; the browser reads Mikoshi's SSE relay
   ([`events.md`](events.md), "The browser's transport").
 - pgvector is built into both PostgreSQL servers, and neither installs it: each service creates
