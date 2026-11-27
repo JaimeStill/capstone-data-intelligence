@@ -160,6 +160,31 @@ A consumer checks completeness by holding every sequence through `completed`'s a
 manifest over what it committed, every attempt's batches, since a redelivery replays content. The
 digest covers the chunks' digests, so it proves which chunk texts arrived, not their vectors.
 
+## Mikoshi's events
+
+Each of Mikoshi's public commands emits one event, typed `mikoshi.<domain>[.<element>].<operation>`,
+its data the entity's stored state (`standards-lab/context/messaging.md`, "Which commands emit
+events"). Context activity is these events on contexts and items, each with the context it changed
+as `subject` and `layer` `mikoshi`; it has no event of its own.
+
+| Type | Command |
+|---|---|
+| `mikoshi.context.created` | create |
+| `mikoshi.context.renamed` | rename |
+| `mikoshi.context.moved` | move, optionally renaming |
+| `mikoshi.context.deleted` | delete, with its confirmed subtree |
+| `mikoshi.context.item.added` | add an item by reference |
+| `mikoshi.context.item.removed` | remove an item's reference |
+
+- **A subtree delete is one event**, on the named context; its descendants and references raise
+  none.
+- **Query contexts** check each `mikoshi.context.item.added` against their filters, and **standing
+  analyses** rerun on the events whose `subject` lies in their context's subtree.
+- **Creating an item or an analysis** follows the same rule; `items` and `standing-analyses` name
+  those types.
+- **A committed batch's event**, written in the batch's transaction, has the `id` of its
+  `bunrei.job.batch` as `causationid`, joining Mikoshi's lineage to the job's.
+
 ## What Bunrei emits
 
 Bunrei appends its job events with their extensions set directly on each `Event`. Mikoshi's events
@@ -167,3 +192,23 @@ leave through its outbox, raised by go-core's
 [`EventKind.Raise`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/kind.go#L36),
 which at v0.12.0 takes a subject and data and no extensions. Mikoshi's events set theirs through
 `Raise` once it can set extensions, which a `.bunrei` task adds.
+
+## The browser's transport
+
+The browser reads Mikoshi's stream; Bunrei's events stay service-to-service. Mikoshi's SSE relay
+serves its JetStream stream as a web-app-sdk
+[`EventSequence`](https://github.com/standards-lab/web-app-sdk/blob/v0.1.0/dist/events.d.ts#L81)
+whose cursor is the stream sequence, so the relay is stateless per replica and any replica resumes
+any read.
+
+This settles evidence 15 against NATS over WebSocket through web-app-sdk's
+[`natsSequence`](https://github.com/standards-lab/web-app-sdk/blob/v0.1.0/dist/events/nats.d.ts#L36),
+as [spike-html-apps built it](https://github.com/JaimeStill/spike-html-apps/blob/2883d78767970d5e33bc8607c2d3503311ae4168/context/README.md#nats-over-websocket-for-spike-ai-pipeline):
+
+| | Mikoshi's SSE relay | NATS over WebSocket |
+|---|---|---|
+| Ordering and resume | the stream sequence as cursor | the same |
+| Auth | Mikoshi's HTTP auth | one static NATS token in the browser; the spike calls real auth a gap |
+| Ports | none beyond HTTP's | a WebSocket listener (4223) and its origin check |
+| Native-tier use | none | browsers as NATS clients |
+| Latency | unmeasured, one hop more; `.mikoshi` `signal-flow` measures it | unmeasured |
