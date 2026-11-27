@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# dataset:summary=Generates the four authored office files into a directory
+# `dataset source generate <outdir>`: runs lib/generate.py through uv against its lock,
+# lib/generate.py.lock, writing opord-26-03-v1.docx, opord-26-03-v2.docx,
+# mission-analysis-brief.pptx, and collection-plan.xlsx into outdir, the same bytes on every run.
+# Needs uv, and the network when uv's cache lacks the locked packages.
+set -euo pipefail
+
+dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
+# shellcheck source=lib/dataset.sh
+source "$dir/../lib/dataset.sh"
+
+if (($# != 1)); then
+  dataset_usage_error "source generate takes one output directory" "source generate <outdir>"
+fi
+exec uv run --quiet --script --locked "$dir/../lib/generate.py" "$1"

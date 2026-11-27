@@ -18,6 +18,15 @@ fail() {
   failures=1
 }
 
+# Prints a SKIP line naming the calling test and the reason given, for a test that can't run here.
+skip() {
+  local test
+  for test in "${FUNCNAME[@]}"; do
+    [[ $test == test_* ]] && break
+  done
+  echo "SKIP: ${BASH_SOURCE[-1]##*/}: $test: $*"
+}
+
 # Fails unless the actual value equals the expected one: assert_equal <what> <actual> <expected>.
 assert_equal() {
   [[ $2 == "$3" ]] || fail "$1: got [$2], want [$3]"
