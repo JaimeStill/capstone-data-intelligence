@@ -35,3 +35,19 @@ run = "bash scripts/currency.sh report"
 [tasks.upgrade]
 description = "Bump the mise tools, action pins, image tags, Dockerfile FROM tags, and Dockerfile source ARGs to their latest, but a held one; rewrites mise.toml, the workflows, and the compose files"
 run = "bash scripts/currency.sh upgrade"
+
+[tasks."stack:up"]
+description = "Build and start the compose stack and wait until every service is healthy; print the stack's logs if it fails"
+run = "docker compose up -d --build --wait || { docker compose logs; exit 1; }"
+
+[tasks."stack:down"]
+description = "Stop the compose stack, keeping its volumes"
+run = "docker compose down"
+
+[tasks."stack:reset"]
+description = "Stop the compose stack and drop its volumes"
+run = "docker compose down -v"
+
+[tasks."stack:smoke"]
+description = "Prove each service of the running compose stack does its job, using only its container's own tools"
+run = "bash scripts/smoke.sh"

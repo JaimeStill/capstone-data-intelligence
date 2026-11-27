@@ -1,0 +1,6 @@
+# capstone-data-intelligence's development stack, one file per service under compose/.
+
+name: capstone-data-intelligence
+
+include:
+  - compose/nats.yml

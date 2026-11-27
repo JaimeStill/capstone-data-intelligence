@@ -1,0 +1,12 @@
+# The development stack's NATS with JetStream on file storage.
+services:
+  nats:
+    build:
+      context: nats
+    ports:
+      - "127.0.0.1:${NATS_PORT:-4226}:4222"
+    volumes:
+      - capstone-data-intelligence-nats:/data
+
+volumes:
+  capstone-data-intelligence-nats:
