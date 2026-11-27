@@ -1,0 +1,11 @@
+{
+  "plansDirectory": "./.claude/plans",
+  "permissions": {
+    "allow": [
+      "Bash(mise run:*)",
+      "Bash(mise tasks:*)",
+      "Bash(docker compose config:*)",
+      "Skill(marathon:marathon)"
+    ]
+  }
+}

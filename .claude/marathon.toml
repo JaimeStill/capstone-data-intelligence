@@ -1,0 +1,11 @@
+# marathon configuration for capstone-data-intelligence.
+# See CLAUDE.md
+
+[project]
+kind = "code"
+check = "mise run check"
+
+[remote]
+platform = "github"
+publish = "gh pr create"
+merge = "gh pr merge --merge --delete-branch"

@@ -1,0 +1,7 @@
+# marathon
+.claude/plans/
+.claude/briefs/
+
+# secrets
+.env
+secrets.json

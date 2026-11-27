@@ -1,0 +1,23 @@
+# The root's tools and its check.
+[settings]
+task.run_auto_install = false
+
+[tools]
+"github:standards-lab/claude-plugins" = { version = "0.24.1", version_prefix = "marathon/v" }
+shellcheck = "0.11.0"
+
+[tasks.check]
+description = "Validate the compose stack when one exists, shellcheck every script, then run lint-context and lint-references; writes nothing"
+run = '''
+set -eu
+cd "$MISE_PROJECT_ROOT"
+if [ -f compose.yml ]; then echo "check: compose"; docker compose config -q; fi
+scripts=$(git ls-files '*.sh')
+if [ -n "$scripts" ]; then echo "check: shellcheck"; shellcheck $scripts; fi
+fail=0
+for lint in lint-context lint-references; do
+  echo "check: $lint"
+  "$lint" || fail=1
+done
+exit "$fail"
+'''
