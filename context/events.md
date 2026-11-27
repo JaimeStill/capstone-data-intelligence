@@ -1,6 +1,6 @@
 # The event protocol
 
-The event protocol is the events Bunrei and Mikoshi publish: their envelope, their lineage,
+The event protocol is the events Bunrei and Mikoshi publish: their envelope and lineage,
 Bunrei's job events, and the manifest that proves a job's results arrived whole. It states only
 what Bunrei, Mikoshi, and the browser rely on. The envelope is go-core's
 [`event`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/doc.go) at v0.12.0, and the
@@ -48,14 +48,14 @@ On every event of a job, `correlationid` is the job's ID, which Bunrei mints. Ea
 - `cancelled` is caused by `cancel_requested`.
 - `queued` and `cancel_requested`, which Commands cause, carry no `causationid`.
 
-docproc yields a part's own event after its outputs, its warnings, and the parts found in it
+docproc yields a part's own event after its outputs, warnings, and the parts found in it
 ([`dispatch.Event`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/dispatch.go#L82)),
 so a `causationid` can name a later event. Bunrei mints a part's event ID when its attempt first
 sees the part, and a consumer resolves a `causationid` by ID, never by order.
 
 ## The job sequence
 
-Each of a job's events carries `jobsequence`, a Bunrei extension: its sequence on the job's own
+Each of a job's events carries `jobsequence`, a Bunrei extension: its sequence on the job's
 subject, gap-free, as a plain decimal from 1. The CloudEvents
 [`sequence`](https://github.com/cloudevents/spec/blob/5391e18c64aafafddcf7ba078e40e07d48352fb1/cloudevents/extensions/sequence.md)
 extension isn't used: its values compare as strings within the one `source` every job shares.
@@ -88,6 +88,8 @@ Each type is `bunrei.job.` followed by its name below. Bunrei's own data are typ
 - **Bunrei carries docinfer's updates** with their JSON unchanged. docinfer's
   [`job.Done`](https://github.com/standards-lab/docinfer/blob/v0.3.0/job/job.go#L249) is no event:
   it goes into its attempt's manifest entry.
+- **`inference` also carries document and timeline extractions** once docinfer's next minor
+  lands ([`protocol.md`](protocol.md), "Profiles and extraction").
 - **Extraction deltas are not events.** docinfer's
   [`Progress`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L111) stays inside
   the request that asked for it, and live views read events.
@@ -117,19 +119,19 @@ its `meta` when the message has them.
 - `urn:standards-lab:bunrei:client:1` for Bunrei's own, under the wire version its `client`
   module declares.
 
-A URN changes only when its wire version does, never with a release alone. An event without data
+A URN changes with its wire version, never with a release alone. An event without data
 has no `dataschema`.
 
 ## Result batches
 
 A `bunrei.job.batch` carries docinfer's `Batch` and two extensions, so a fold over headers alone
-yields the manifest without reading a batch back:
+yields the manifest:
 
 - `batchdigest`, the batch's
   [`Digest()`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L125).
 - `batchchunks`, its chunk count, as a plain decimal.
 
-A batch is identified by its job and its `jobsequence`, which no attempt reuses.
+A batch is identified by its job and `jobsequence`, which no attempt reuses.
 
 The cap on a batch's marshalled JSON is a Bunrei setting, 768 KiB by default, which Bunrei passes
 to docinfer as
@@ -180,7 +182,7 @@ changed as `subject`; it has no event of its own.
 
 ## How the extensions are set
 
-Bunrei sets the extensions directly on each job `Event` it appends. Mikoshi raises its events into
+Bunrei sets the extensions on each job `Event` it appends. Mikoshi raises its events into
 its outbox through go-core's
 [`EventKind.Raise`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/kind.go#L36),
 which at v0.12.0 takes none; Mikoshi sets them once a `.bunrei` task adds them to `Raise`.
@@ -214,8 +216,8 @@ them.
 `.bunrei` `event-stream` and `.mikoshi` `ingest` build against this note, and their tests are its
 executable proof. A change to the event protocol reaches:
 
-- `.bunrei`: `state`, `jobs`, `event-stream`, and the task that lets go-core's `Raise` set
-  extensions.
+- `.bunrei`: `state`, `jobs`, `event-stream`, `document-extraction`, and the task that lets
+  go-core's `Raise` set extensions.
 - `.mikoshi`: `items`, `ingest`, `standing-analyses`, `lineage`, `signal-flow`, and the task that
   builds Mikoshi's SSE relay.
 - `.showcase`: `presentation`.

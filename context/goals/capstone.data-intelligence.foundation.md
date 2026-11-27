@@ -10,7 +10,7 @@
 2. [x] protocol
 3. [x] events
 4. [x] stack
-5. [ ] athena-mapping
+5. [x] athena-mapping
 6. [ ] demo-dataset
 
 ## Decisions
@@ -34,6 +34,14 @@
   Rejected: building from Mikoshi's checkout.
 - stack: each service has its own PostgreSQL server. Rejected: one server with a database per
   service.
+- athena-mapping: `.mikoshi` builds the space switch (`pgvector-types` on sqlate, then
+  `space-switch`, after `ingest`). Rejected: switches after the capstone; a sqlate goal after it.
+- athena-mapping: document-scope and video-timeline extraction are built in docinfer by `.bunrei`
+  `document-extraction` before `api`. Rejected: per-source only, with a backlog goal.
+- athena-mapping: the capstone runs vision transcription; the OCR spike asks whether an OCR tier
+  is needed at all, excludes olmOCR by model origin, and is not a capstone deliverable.
+- athena-mapping: the Athena design review is stated only in the `athena` note; it runs outside
+  the workspace with the Athena team. Rejected: a backlog entry.
 
 ## Pending edits
 
@@ -60,3 +68,27 @@
 - coordinator · context/data-intelligence.md: the root's stack sentence becomes "the compose stack
   (NATS with JetStream, a PostgreSQL with pgvector per service, and SeaweedFS), against Torii on
   gb10-2, which Bunrei and Mikoshi join in `.showcase` `services`".
+- coordinator · docs/data-intelligence.md:
+  - "Athena onto Bunrei" becomes a link to the root's `athena` note.
+  - "Open items": drop `athena-mapping`'s typed cells for `sparse_rows`.
+  - "Embedding spaces": a model change adds a space and fills it by resubmitting the items through
+    Bunrei, while the active space serves until the new one is ready, linking the root's `chunks`
+    note, "Embedding space", in place of "re-embeds the stored chunks (blue/green, switched after a
+    recall evaluation)".
+- coordinator · context/data-intelligence.md: its pointer to "Athena onto Bunrei" links the
+  root's `athena` note.
+- coordinator · roadmap/capstone.data-intelligence.mikoshi.toml:
+  - Add sqlate to `repos`.
+  - After `ingest`, add `pgvector-types` (repos: sqlate): every pgvector type and metric, with
+    live tests per type, released as `postgres/pgvector/v0.2.0`.
+  - Then add `space-switch`, which waits on `pgvector-types`: status, the active marker,
+    re-embed by resubmission, rollback, and the per-space type migration.
+  - `hybrid-search`'s summary gains "reads the active space".
+- coordinator · roadmap/capstone.data-intelligence.bunrei.toml: before `api`, add
+  `document-extraction` (repos: docinfer): document-scope and video-timeline extraction at
+  docinfer's next minor.
+- coordinator · roadmap/experiment.ocr.spike-scanned-documents.toml and docs/ai-strategy.md:
+  reframe the spike as "is an OCR tier needed at all beside self-hosted vision" (Tesseract
+  against Gemma 4 and a dense vision model; olmOCR's model dropped for model origin, the
+  olmOCR-bench dataset kept; measure fidelity, cost, latency, CPU throughput, and boxes and
+  confidence). State that it is not part of the capstone deliverable.

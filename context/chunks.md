@@ -15,10 +15,18 @@ context in between.
 
 A space is keyed by its identity: docinfer's embeddings
 [`Identity`](https://github.com/standards-lab/docinfer/blob/v0.3.0/capability.go#L212) (the served
-model and the settings of its document convention) plus the dimensions. It holds two registered
-attributes that are not identity: the metric, and the query prefix, from the query convention
-docinfer's `Profile` reports as `embedding_query`. A model change adds a space and re-embeds the
-stored chunks into it.
+model and the settings of its document convention) plus the dimensions and the pgvector type:
+`vector`, `halfvec`, `bit`, or `sparsevec`. It holds three attributes that are not identity: the
+metric; the query prefix, from the query convention docinfer's `Profile` reports as
+`embedding_query`; and a status, building, ready, or failed.
+
+One space in the store is active, and searches read it. A model change or a type change adds a
+space, which fills while the active space serves and becomes active only once it is ready. A model
+change fills it by resubmitting the items to Bunrei under a profile that names the new space; with
+docinfer's and docproc's content-keyed caches, only the embeddings are computed again. A type
+change of the same model fills a `halfvec` or `bit` space from its `vector` space without calling
+the model; a `sparsevec` space needs a sparse model, so it is a model change. The SQL that fills
+and activates a space is Mikoshi's.
 
 The chunker is not part of a space. docinfer keys an embedding by the embeddings identity and the
 chunk text's SHA-256
@@ -28,7 +36,7 @@ chunking by the chunker identity and the source text's SHA-256
 re-chunk reuses the vectors of every chunk text that didn't change. A space that named its chunker
 would re-embed them all.
 
-Mikoshi's `store` registers set A's space (multilingual-e5-large, 1,024 dimensions);
+Mikoshi's `store` registers set A's space (multilingual-e5-large, 1,024 dimensions, `vector`);
 `hybrid-search` reads a space's dimensions, metric, and query prefix to embed a query and reach
 its index.
 
@@ -63,10 +71,13 @@ Mikoshi's `ingest` writes chunks; `hybrid-search` reads their text, tsvector, an
 ### Embedding
 
 An embedding is keyed by its chunk text's SHA-256 and its space, so chunks with the same text share
-one vector per space. An embedding the endpoint refused, or that failed, is stored with its error
-and no vector: docinfer's error comes from one embeddings endpoint, so it belongs to one space.
-Embeddings share one table with an untyped `vector` column, and each space has a partial HNSW
-index over a cast to its dimensions, `embedding::vector(n)`, restricted to that space's rows.
+one vector per space, of that space's pgvector type. An embedding the endpoint refused, or that
+failed, is stored with its error and no vector: docinfer's error comes from one embeddings
+endpoint, so it belongs to one space. Embeddings share one table with an untyped `vector` column,
+and each space has a partial HNSW index over a cast to its dimensions, `embedding::vector(n)`,
+restricted to that space's rows. That shape serves `vector` spaces; `.mikoshi` `pgvector-types`
+is planned to prove whether the other types take typed columns or expression indexes over the one
+`vector` column.
 
 A query casts to use the index: a nearest-neighbour query that orders by the cast scans its space's
 index, and one without the cast misses every index. A vector of the wrong dimensions is refused in
@@ -143,7 +154,8 @@ tests are its executable proof.
 
 A change to the contract reaches:
 
-- `.mikoshi`: `store`, `contexts`, `ingest`, `hybrid-search`, and `lineage`.
+- `.mikoshi`: `store`, `contexts`, `ingest`, `hybrid-search`, `lineage`, `pgvector-types`, and
+  `space-switch`.
 - `.foundation` [`events`](events.md) and `.bunrei` `api`, because Bunrei's result batches carry
   docinfer's [`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117) (its
   parts, sources, and chunks).
