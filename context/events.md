@@ -37,7 +37,7 @@ Every event carries three extension attributes:
   "Bunrei's job types" gives each, and `mikoshi` on Mikoshi's.
 
 On every event of a job, `correlationid` is the job's ID, which Bunrei mints. Each type's
-`causationid` lets a citation walk back to the source bytes:
+`causationid` lets a consumer trace a citation back to the source bytes:
 
 - `started` is caused by the job's `queued`.
 - A part's own event is caused by its parent part's own event, and the input's own event by its
@@ -85,14 +85,14 @@ Each type is `bunrei.job.` followed by its name below. Bunrei's own data are typ
   [`Profile`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L53) names the
   embedding space and the chunker that a batch lacks ([`chunks.md`](chunks.md), "Space and
   chunker").
-- **docinfer's updates pass through**, their JSON unchanged. Its
+- **Bunrei carries docinfer's updates** with their JSON unchanged. docinfer's
   [`job.Done`](https://github.com/standards-lab/docinfer/blob/v0.3.0/job/job.go#L249) is no event:
   it goes into its attempt's manifest entry.
 - **Extraction deltas are not events.** docinfer's
   [`Progress`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L111) stays inside
   the request that asked for it, and live views read events.
-- **The end.** `completed`, `failed`, and `cancelled` end a job; `attempt.failed` ends an attempt
-  that has deliveries left.
+- **Terminal events.** `completed`, `failed`, and `cancelled` end a job; `attempt.failed` ends an
+  attempt that has deliveries left.
 
 ## Metadata outputs
 
@@ -178,13 +178,12 @@ changed as `subject`; it has no event of its own.
 - **A committed batch's event**, written in the batch's transaction, has the `id` of its
   `bunrei.job.batch` as `causationid`, joining Mikoshi's lineage to the job's.
 
-## What Bunrei emits
+## How the extensions are set
 
-Bunrei appends its job events with their extensions set directly on each `Event`. Mikoshi's events
-leave through its outbox, raised by go-core's
+Bunrei sets the extensions directly on each job `Event` it appends. Mikoshi raises its events into
+its outbox through go-core's
 [`EventKind.Raise`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/kind.go#L36),
-which at v0.12.0 takes no extensions; Mikoshi's events set theirs once a `.bunrei` task adds
-them to `Raise`.
+which at v0.12.0 takes none; Mikoshi sets them once a `.bunrei` task adds them to `Raise`.
 
 ## The browser's transport
 
@@ -205,7 +204,7 @@ as [spike-html-apps built it](https://github.com/JaimeStill/spike-html-apps/blob
 | Native-tier use | none | browsers as NATS clients |
 | Latency | unmeasured, one hop more; `.mikoshi` `signal-flow` measures it | unmeasured |
 
-## What the event protocol leaves out
+## What the note leaves out
 
 Stream names, retentions, consumer names, and the relay's routes are left to the tasks that build
 them.
