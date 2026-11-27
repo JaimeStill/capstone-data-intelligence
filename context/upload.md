@@ -4,8 +4,8 @@ The resumable upload carries a document too large for Bunrei's Submit, or any fi
 Mikoshi, in chunks that survive a dropped connection. It is
 [draft-ietf-httpbis-resumable-upload-16](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16)
 (23 November 2026, interop version 11), pinned at that revision. This note states what the
-handler and its clients rely on and cites the draft's sections rather than restating them. What a
-completed upload becomes in Bunrei is [`protocol.md`](protocol.md)'s.
+handler and its clients rely on and cites the draft's sections rather than restating them.
+[`protocol.md`](protocol.md) says what a completed upload becomes in Bunrei.
 
 A client sends Upload-Draft-Interop-Version: 11 on every request to the upload, the creating POST
 and each PATCH, HEAD, and DELETE
@@ -33,10 +33,10 @@ The server names the upload resource in Location
 ([§6.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-6.2)).
 It sends Location, with Upload-Limit, in a 104 (Upload Resumption Supported) interim response
 ([§12](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-12))
-only when the request's Upload-Draft-Interop-Version is 11, and that 104 carries the field back
-(Appendix B). When the request's Upload-Complete is ?0, the final response is a 201 (Created) with
-Location, Upload-Limit, and Upload-Complete: ?0. A final response carrying Upload-Complete: ?1
-is the target resource's, not the upload protocol's
+only when the request's Upload-Draft-Interop-Version is 11, and that 104 echoes
+Upload-Draft-Interop-Version (Appendix B). When the request's Upload-Complete is ?0, the final
+response is a 201 (Created) with Location, Upload-Limit, and Upload-Complete: ?0. The target resource, not the upload protocol,
+defines a final response carrying Upload-Complete: ?1
 ([§4.2.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-4.2.1)).
 
 ## Append
@@ -55,8 +55,8 @@ An append whose Upload-Offset is not the upload's offset is a 409 (Conflict) wit
 ?0 and the current offset in Upload-Offset
 ([§8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.2)).
 Its body is an RFC 9457 problem of the type
-`https://iana.org/assignments/http-problem-types#mismatching-upload-offset`, which fills in the
-`expected-offset` and `provided-offset` members
+`https://iana.org/assignments/http-problem-types#mismatching-upload-offset`, with its
+`expected-offset` and `provided-offset` members filled in
 ([§14.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-14.1)).
 
 ## Resumption and cancellation
@@ -86,7 +86,7 @@ A client sends no chunk larger than `max-append-size`. Bunrei's chunk size is a 
 Appends to one upload are sequential
 ([§10](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-10)):
 a client never sends an append while its creation or another append is in progress. The server
-holds that across its replicas, so two requests to one upload never append at once, whichever
+enforces this across its replicas: two requests to one upload never append at once, whichever
 replica serves each.
 
 ## Digests
@@ -114,7 +114,7 @@ is an error with Upload-Complete: ?1, which resuming cannot fix
 ## What the note leaves out
 
 The routes, the store, the handler's implementation, and the version numbers of the releases are
-the tasks' that build them: `.bunrei` `upload` and `.mikoshi` `browser-upload`.
+left to the tasks that build them: `.bunrei` `upload` and `.mikoshi` `browser-upload`.
 
 ## Ownership
 
