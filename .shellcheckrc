@@ -1,0 +1,2 @@
+# Shellcheck's configuration: it follows the files a script sources, such as lib/dataset.sh.
+external-sources=true

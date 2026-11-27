@@ -13,20 +13,12 @@ shellcheck = "0.11.0"
 GO_MODULES = ""
 
 [tasks.check]
-description = "Validate the compose stack when one exists, shellcheck every script, then run lint-context and lint-references; writes nothing"
-run = '''
-set -eu
-cd "$MISE_PROJECT_ROOT"
-if [ -f compose.yml ]; then echo "check: compose"; docker compose config -q; fi
-scripts=$(git ls-files '*.sh')
-if [ -n "$scripts" ]; then echo "check: shellcheck"; shellcheck $scripts; fi
-fail=0
-for lint in lint-context lint-references; do
-  echo "check: $lint"
-  "$lint" || fail=1
-done
-exit "$fail"
-'''
+description = "Validate the compose stack when one exists, shellcheck every tracked sh or bash script, run lint-context and lint-references, then run the shell tests; writes nothing"
+run = "bash scripts/check.sh"
+
+[tasks.dataset]
+description = "Run a dataset command: mise run dataset -- <group> <verb> [args...]; with no arguments, list the commands"
+run = "bin/dataset"
 
 [tasks.currency]
 description = "Report every mise tool, action pin, image tag, Dockerfile FROM tag, and Dockerfile source ARG behind its latest, a held one with its reason; writes nothing"
