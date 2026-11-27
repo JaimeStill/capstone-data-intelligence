@@ -6,10 +6,10 @@ what Bunrei, Mikoshi, and the browser rely on. The envelope is go-core's
 [`event`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/doc.go) at v0.12.0, and the
 data are the shapes of [docproc v0.10.0](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go)
 and [docinfer v0.3.0](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go), linked
-where a type carries one. It settles the event table of docproc's Bunrei draft at
+where a type carries one. It supersedes the event table of docproc's Bunrei draft at
 [v0.10.0](https://github.com/standards-lab/docproc/blob/v0.10.0/context/bunrei.md), "Events" and
-"Results and the manifest", and replaces it where they differ. [`protocol.md`](protocol.md) holds
-the Queries and Commands and the `Manifest` type.
+"Results and the manifest". [`protocol.md`](protocol.md) holds the Queries and Commands and the
+`Manifest` type.
 
 ## Envelope
 
@@ -50,17 +50,15 @@ On every event of a job, `correlationid` is the job's ID, which Bunrei mints. Ea
 
 docproc yields a part's own event after its outputs, its warnings, and the parts found in it
 ([`dispatch.Event`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/dispatch.go#L82)),
-so their `causationid` names an event later in the job's sequence. Bunrei mints a part's event ID
-when its attempt first sees the part, and a consumer resolves a `causationid` by ID, never by
-order.
+so a `causationid` can name a later event. Bunrei mints a part's event ID when its attempt first
+sees the part, and a consumer resolves a `causationid` by ID, never by order.
 
 ## The job sequence
 
 Each of a job's events carries `jobsequence`, a Bunrei extension: its sequence on the job's own
-subject, gap-free, as a plain decimal from 1. `source` stays `bunrei`. The CloudEvents
+subject, gap-free, as a plain decimal from 1. The CloudEvents
 [`sequence`](https://github.com/cloudevents/spec/blob/5391e18c64aafafddcf7ba078e40e07d48352fb1/cloudevents/extensions/sequence.md)
-extension isn't used: its values compare as strings within one source, so under the one `source`
-every job shares, it would need padded values and a source per job.
+extension isn't used: its values compare as strings within the one `source` every job shares.
 
 ## Bunrei's job types
 
@@ -92,7 +90,7 @@ Each type is `bunrei.job.` followed by its name below. Bunrei's own data are typ
   it goes into its attempt's manifest entry.
 - **Extraction deltas are not events.** docinfer's
   [`Progress`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L111) stays inside
-  the request that asked for it, as every token stream does, and live views read events.
+  the request that asked for it, and live views read events.
 - **The end.** `completed`, `failed`, and `cancelled` end a job; `attempt.failed` ends an attempt
   that has deliveries left.
 
@@ -101,9 +99,7 @@ Each type is `bunrei.job.` followed by its name below. Bunrei's own data are typ
 A metadata record is a `bunrei.job.output` whose output's `media_type` is one of docproc's four
 [`metadata`](https://github.com/standards-lab/docproc/blob/v0.10.0/metadata/doc.go) media types
 ([`MediaOfficeMetadata` and the rest](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L221)),
-or its mail record type
-[`MediaMail`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L207) or
-OneNote record type
+[`MediaMail`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L207), or
 [`MediaOneNote`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L210).
 The event carries the record's SHA-256, never its content, which GetOutput streams; an inference
 likewise carries its text's SHA-256. A mail message's output carries
@@ -151,8 +147,7 @@ chunk that alone takes a batch past the cap is a batch of one
 - `Batches` counts the batch events in the range, every attempt's, and `Chunks` sums their
   `batchchunks`.
 - `Digest` is the lowercase hex SHA-256 over those batches' `batchdigest` values in sequence order,
-  each prefixed by its length as an 8-byte big-endian integer, as `Digest()` hashes a batch's
-  chunk digests.
+  each prefixed by its length as an 8-byte big-endian integer.
 - `Attempts` has one entry per `started` in the range, in order. An entry's `Done` is its
   attempt's `job.Done`, absent when the attempt ended without one.
 
@@ -165,7 +160,7 @@ digest covers the chunks' digests, so it proves which chunk texts arrived, not t
 Each of Mikoshi's public commands emits one event, typed `mikoshi.<domain>[.<element>].<operation>`,
 its data the entity's stored state (`standards-lab/context/messaging.md`, "Which commands emit
 events"). Context activity is these events on contexts and items, each with the context it changed
-as `subject` and `layer` `mikoshi`; it has no event of its own.
+as `subject`; it has no event of its own.
 
 | Type | Command |
 |---|---|
@@ -190,16 +185,15 @@ as `subject` and `layer` `mikoshi`; it has no event of its own.
 Bunrei appends its job events with their extensions set directly on each `Event`. Mikoshi's events
 leave through its outbox, raised by go-core's
 [`EventKind.Raise`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/kind.go#L36),
-which at v0.12.0 takes a subject and data and no extensions. Mikoshi's events set theirs through
-`Raise` once it can set extensions, which a `.bunrei` task adds.
+which at v0.12.0 takes no extensions; Mikoshi's events set theirs once a `.bunrei` task adds
+them to `Raise`.
 
 ## The browser's transport
 
 The browser reads Mikoshi's stream; Bunrei's events stay service-to-service. Mikoshi's SSE relay
 serves its JetStream stream as a web-app-sdk
 [`EventSequence`](https://github.com/standards-lab/web-app-sdk/blob/v0.1.0/dist/events.d.ts#L81)
-whose cursor is the stream sequence, so the relay is stateless per replica and any replica resumes
-any read.
+whose cursor is the stream sequence, so any replica resumes any read.
 
 This settles evidence 15 against NATS over WebSocket through web-app-sdk's
 [`natsSequence`](https://github.com/standards-lab/web-app-sdk/blob/v0.1.0/dist/events/nats.d.ts#L36),
@@ -212,3 +206,18 @@ as [spike-html-apps built it](https://github.com/JaimeStill/spike-html-apps/blob
 | Ports | none beyond HTTP's | a WebSocket listener (4223) and its origin check |
 | Native-tier use | none | browsers as NATS clients |
 | Latency | unmeasured, one hop more; `.mikoshi` `signal-flow` measures it | unmeasured |
+
+## What the event protocol leaves out
+
+Stream names, retentions, consumer names, and the relay's routes are left to the tasks that build
+them.
+
+## Ownership
+
+A change to the event protocol reaches:
+
+- `.bunrei`: `state`, `jobs`, `event-stream`, and the task that lets go-core's `Raise` set
+  extensions.
+- `.mikoshi`: `items`, `ingest`, `standing-analyses`, `lineage`, `signal-flow`, and the task that
+  builds Mikoshi's SSE relay.
+- `.showcase`: `presentation`.
