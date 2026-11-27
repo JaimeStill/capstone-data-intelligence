@@ -1,0 +1,44 @@
+{
+  "contexts": [
+    {"name": "tour", "contexts": [
+      {"name": "documents"},
+      {"name": "images"}
+    ]},
+    {"name": "share", "contexts": [
+      {"name": "psyops"},
+      {"name": "briefings"}
+    ]},
+    {"name": "views", "contexts": [
+      {"name": "audio", "filter": [{"field": "kind", "op": "eq", "value": "audio"}]},
+      {"name": "long", "filter": [
+        {"field": "duration", "op": "gt", "value": 600},
+        {"field": "route", "op": "in", "value": ["transcribe", "describe"]},
+        {"field": "route", "op": "notnull"}
+      ]}
+    ]}
+  ],
+  "files": [
+    {"id": "field-manual", "name": "field-manual.pdf", "contexts": ["tour/documents", "share/psyops"],
+     "url": "https://example.org/field-manual.pdf", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "bytes": 1024,
+     "credit": "Example Press, public domain"},
+    {"id": "harbor-photo", "name": "harbor.jpg", "contexts": ["tour/images"],
+     "manual": ["Open the archive's harbor collection", "Download the full-size scan"],
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "bytes": 2048, "credit": "Harbor Archive, CC BY 4.0"},
+    {"id": "corpus-guide", "name": "guide.md", "contexts": ["share/briefings"],
+     "corpus": "guides/guide.md"},
+    {"id": "budget-v1", "name": "budget.xlsx", "contexts": ["share/briefings"],
+     "generated": "budget.xlsx", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"id": "budget-v2", "name": "budget.xlsx", "contexts": ["share/briefings"],
+     "generated": "budget-v2.xlsx", "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "live": true, "supersedes": "budget-v1"}
+  ],
+  "records": [
+    {"id": "manual-summary", "annotates": ["field-manual", "harbor-photo"],
+     "contexts": ["share/psyops"]}
+  ],
+  "live_steps": [
+    {"op": "create", "path": "share/drafts"},
+    {"op": "rename", "path": "share/drafts", "name": "plans"},
+    {"op": "move", "path": "share/plans", "parent": "tour"},
+    {"op": "create", "path": "tour/plans/recent", "filter": [{"field": "kind", "op": "like", "value": "doc%"}]}
+  ]
+}

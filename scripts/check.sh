@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Validates the compose stack when one exists, shellchecks every tracked file whose first line is a
-# sh or bash shebang, runs lint-context and lint-references, and runs every tests/*.test.sh,
-# exiting nonzero if any step fails. Writes nothing.
+# sh or bash shebang, runs lint-context and lint-references, runs every tests/*.test.sh, and checks
+# the dataset definition when dataset/dataset.json exists, exiting nonzero if any step fails.
+# Writes nothing.
 # Run it through `mise run check`.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit
@@ -47,9 +48,17 @@ run_tests() {
   done
 }
 
+check_dataset() {
+  if [[ -f dataset/dataset.json ]]; then
+    echo "check: dataset"
+    bin/dataset tree check || fail=1
+  fi
+}
+
 compose_config
 shellcheck_scripts
 run_lint lint-context
 run_lint lint-references
 run_tests
+check_dataset
 exit "$fail"

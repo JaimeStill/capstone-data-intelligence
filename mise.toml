@@ -13,7 +13,7 @@ shellcheck = "0.11.0"
 GO_MODULES = ""
 
 [tasks.check]
-description = "Validate the compose stack when one exists, shellcheck every tracked sh or bash script, run lint-context and lint-references, then run the shell tests; writes nothing"
+description = "Validate the compose stack when one exists, shellcheck every tracked sh or bash script, run lint-context and lint-references, run the shell tests, then check dataset/dataset.json when it exists; writes nothing"
 run = "bash scripts/check.sh"
 
 [tasks.dataset]

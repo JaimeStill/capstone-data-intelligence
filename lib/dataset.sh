@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # The dataset suite's shell library, sourced by the dataset dispatcher and every
 # dataset-<group>-<verb> command, which stay thin consumers of it. It holds the usage error every
-# command reports the same way.
+# command reports the same way, and sources each group's library: lib/tree.sh.
 
 # Prints the message given to stderr, then the usage given, when one is, and exits 2.
 dataset_usage_error() {
@@ -11,3 +11,6 @@ dataset_usage_error() {
   fi
   exit 2
 }
+
+# shellcheck source=lib/tree.sh
+source "$(dirname "${BASH_SOURCE[0]}")/tree.sh"
