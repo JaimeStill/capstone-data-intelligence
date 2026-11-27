@@ -2,7 +2,7 @@
 # The dataset suite's shell library, sourced by the dataset dispatcher and every
 # dataset-<group>-<verb> command, which stay thin consumers of it. It holds the usage error every
 # command reports the same way, and sources each group's library, lib/tree.sh and lib/source.sh,
-# and lib/mikoshi.sh, the Mikoshi API calls the tree's load makes.
+# and lib/mikoshi.sh, the Mikoshi API calls the tree's load and reset make.
 
 # Prints the message given to stderr, then the usage given, when one is, and exits 2.
 dataset_usage_error() {

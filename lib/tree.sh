@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-# The dataset definition's check and its load, sourced by lib/dataset.sh: lib/tree.jq validates the
-# definition and documents its format, this library adds the record bodies beside it, which jq
-# can't see, and builds the declared contexts in Mikoshi through lib/mikoshi.sh.
+# The dataset definition's check, its load, and its reset, sourced by lib/dataset.sh: lib/tree.jq
+# validates the definition and documents its format, this library adds the record bodies beside
+# it, which jq can't see, and builds and deletes the declared contexts in Mikoshi through
+# lib/mikoshi.sh.
 
 # Runs jq with the program given, which may call lib/tree.jq's definitions, and the remaining
 # arguments, printing raw strings.
@@ -115,4 +116,46 @@ dataset_tree_load() {
 
   echo "$name: $created created, $exists exists, $differ differ, $skipped skipped"
   ((differ == 0))
+}
+
+# Deletes the top-level contexts the definition at the path given declares, each with its whole
+# subtree, from Mikoshi, after validating the definition as dataset_tree_check does; the definition
+# is named in its output as the second argument, or as the path when there is none. Matches each
+# by name among every child of Mikoshi's root, printing "context <name>: deleted (<n>
+# descendants)", or "context <name>: absent" when there is none, then
+# "<name>: <n> deleted, <n> absent". Leaves every other context, and the root, as it is; refuses
+# when Mikoshi is unreachable, and stops at the first call Mikoshi refuses.
+dataset_tree_reset() {
+  local path=$1 name=${2:-$1} names root reason children top found count
+  local deleted=0 absent=0
+  dataset_tree_check "$path" "$name" >/dev/null || return
+  names=$(dataset_tree_jq '.contexts[].name' "$path") || return
+  root=$(mikoshi_root)
+  if ! reason=$(mikoshi_call GET "/api/contexts/$root"); then
+    echo "dataset: $name: $reason" >&2
+    return 1
+  fi
+  if ! children=$(mikoshi_children "$root"); then
+    echo "dataset: $name: $children" >&2
+    return 1
+  fi
+
+  while IFS= read -r top <&3; do
+    [[ -n $top ]] || continue
+    found=$(jq -r --arg name "$top" 'first(.[] | select(.name == $name) | .id) // empty' \
+      <<<"$children") || return
+    if [[ -z $found ]]; then
+      echo "context $top: absent"
+      absent=$((absent + 1))
+      continue
+    fi
+    if ! count=$(mikoshi_delete "$found"); then
+      echo "dataset: $name: context $top: $count" >&2
+      return 1
+    fi
+    echo "context $top: deleted ($count descendants)"
+    deleted=$((deleted + 1))
+  done 3<<<"$names"
+
+  echo "$name: $deleted deleted, $absent absent"
 }
