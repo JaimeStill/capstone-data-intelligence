@@ -1,0 +1,35 @@
+{
+  "title": "Information operations case study index",
+  "unit": "Task Force LANTERN, S3 information operations cell",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-05",
+  "purpose": "Reading and listening list for the Exercise QUIET HARBOR train-up, mapped to the themes the task force will use against VLF false reporting.",
+  "cases": [
+    {
+      "file": "perceptions-are-reality",
+      "title": "Perceptions Are Reality",
+      "publisher": "Army University Press",
+      "themes": ["perception management", "measuring effects on an audience", "credibility"],
+      "exercise_link": "Commander's intent: residents can tell verified notices from false reports"
+    },
+    {
+      "file": "bush-speech-2001-09-12",
+      "title": "Presidential remarks, 12 September 2001",
+      "format": "audio",
+      "themes": ["crisis communication", "framing", "reassuring a domestic audience"],
+      "exercise_link": "Tone for corrections issued after a false report spreads"
+    },
+    {
+      "file": "duck-and-cover-two-audio",
+      "title": "Duck and Cover (1951), one-minute clip with two audio tracks",
+      "format": "video",
+      "themes": ["civil defense messaging", "simple repeatable instruction", "audience: children and families"],
+      "exercise_link": "Plain-language notices for distribution points"
+    }
+  ],
+  "discussion_questions": [
+    "Which of these messages would survive a rumor that contradicts it within the hour?",
+    "What made each messenger credible to its audience?"
+  ],
+  "facilitator": "TF LANTERN IO cell chief"
+}

@@ -1,0 +1,40 @@
+{
+  "title": "OSINT source register",
+  "unit": "Task Force LANTERN, S2 analysis cell",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-09",
+  "rating_scale": "Admiralty code source reliability, A (completely reliable) to F (cannot be judged)",
+  "supports": {"file": "collection-plan", "label": "OPORD 26-03 Annex C"},
+  "sources": [
+    {
+      "file": "fm-2-0",
+      "title": "FM 2-0, Intelligence",
+      "publisher": "Army Publishing Directorate",
+      "reliability": "A",
+      "use": "Doctrine for collection management; cited for PIR 3 and PIR 4"
+    },
+    {
+      "file": "sailing-the-sea-of-osint",
+      "title": "Sailing the Sea of OSINT in the Information Age",
+      "publisher": "CIA Center for the Study of Intelligence",
+      "reliability": "B",
+      "use": "Practitioner method for open-source monitoring; cited for PIR 1 and PIR 4"
+    },
+    {
+      "file": "tradecraft-primer",
+      "title": "A Tradecraft Primer: Structured Analytic Techniques",
+      "publisher": "Central Intelligence Agency",
+      "reliability": "B",
+      "use": "Analysis of competing hypotheses for the daily assessment"
+    },
+    {
+      "file": "ic-osint-strategy",
+      "title": "The IC OSINT Strategy 2024-2026",
+      "publisher": "Office of the Director of National Intelligence",
+      "reliability": "A",
+      "use": "Policy frame for open-source collection; cited for PIR 2"
+    }
+  ],
+  "local_sources_pending_rating": ["Local radio monitoring", "Provincial Information Office reports"],
+  "analyst": "TF LANTERN S2 analysis cell OIC"
+}

@@ -1,0 +1,20 @@
+{
+  "title": "Memorandum for record: marking of exercise products",
+  "unit": "Task Force LANTERN, S1 and S2",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-03",
+  "subject": "Banner marking and format of Exercise QUIET HARBOR products",
+  "references": [
+    {"file": "dodm-5200-01-vol-2", "title": "DoDM 5200.01 Volume 2, DoD Information Security Program: Marking of Information"},
+    {"file": "ar-25-50", "title": "AR 25-50, Preparing and Managing Correspondence"}
+  ],
+  "guidance": [
+    "Every exercise product carries the banner UNCLASSIFIED // FOR TRAINING at the top and bottom of each page or slide.",
+    "No product contains classified information. Fictional names (Varrow, Kestrel Bay, VLF) are used throughout.",
+    "Memoranda follow the AR 25-50 format; orders follow the five-paragraph format.",
+    "A revised product keeps its number and states its revision on the title line, as OPORD 26-03 REVISION 1 does.",
+    "Real-world reference material in the share keeps its original markings and is not re-marked."
+  ],
+  "applies_to": ["share/admin", "share/intelligence", "share/operations-planning"],
+  "point_of_contact": "TF LANTERN S2 security manager"
+}

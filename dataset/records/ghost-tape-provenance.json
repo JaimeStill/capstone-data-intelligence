@@ -1,0 +1,24 @@
+{
+  "title": "Provenance note: Ghost Tape No. 10",
+  "unit": "Task Force LANTERN, S3 PSYOP section",
+  "marking": "UNCLASSIFIED // FOR TRAINING",
+  "date": "2026-03-08",
+  "file": "ghost-tape-no-10",
+  "description": "Audio associated with Operation Wandering Soul, Vietnam War. Ogg Vorbis, stereo, 44.1 kHz, about 3 min 55 s.",
+  "source": {
+    "host": "Wikimedia Commons",
+    "license_tag": "PD-USGov-Military",
+    "upload_origin": "Uploaded to Commons from a YouTube video, not from a NARA or other archival original"
+  },
+  "uncertainty": [
+    "The chain of custody between the original recording and the YouTube upload is unknown.",
+    "The audio may be edited, re-mixed, or a later reconstruction; nothing in hand rules that out.",
+    "The public domain tag rests on the uploader's claim that it is a US military work."
+  ],
+  "handling": "Use as an illustrative example only. Do not cite as a primary source in any product or assessment.",
+  "status": "open",
+  "next_steps": [
+    {"owner": "S2 analyst", "task": "Search the NARA catalog for an archival copy and record its identifier", "due": "2026-03-13"},
+    {"owner": "S3 PSYOP", "task": "Replace this file with the archival copy if one is found", "due": "after NARA search"}
+  ]
+}
