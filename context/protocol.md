@@ -4,8 +4,8 @@ Bunrei's protocol is the Queries and Commands that Mikoshi and other callers sen
 types they exchange. It states only what Bunrei and its callers rely on. It takes its shapes from
 docproc's Bunrei draft at
 [fab8e70](https://github.com/standards-lab/docproc/blob/fab8e70fe0a85f08cbfdffc738944bcf63f58117/context/bunrei.md),
-except where this note settles otherwise. The resumable upload is the `upload` note's, which the
-protocol task's second slice adds, and the job's events are `.foundation` `events`'.
+except where this note settles otherwise. The resumable upload is the [`upload`](upload.md)
+note's, and the job's events are `.foundation` `events`'.
 
 ## Transport
 
@@ -81,7 +81,7 @@ chunks, and digest count, and how a consumer checks them, is `events`'.
   of its own.
 - **CompleteUpload** takes a completed upload, a profile, and an optional extraction, and returns
   the job, queued. It is Bunrei's one upload Command; the upload itself, its offset included,
-  which a client reads from the upload's own HEAD, is the `upload` note's.
+  which a client reads from the upload's own HEAD, is the [`upload`](upload.md) note's.
 - **CancelJob** takes a job's ID and requests its cancellation. The job ends `cancelled` unless it
   has already ended.
 
