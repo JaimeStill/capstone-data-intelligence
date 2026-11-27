@@ -1,116 +1,17 @@
 # goal · capstone.data-intelligence.foundation
 
-- **State:** building
-- **Task:** stack
-- **Branch:** stack
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
 1. [x] chunks
 2. [x] protocol
 3. [x] events
-4. [ ] stack
+4. [x] stack
 5. [ ] athena-mapping
 6. [ ] demo-dataset
-
-## Task brief · stack
-
-**Problem**
-
-The capstone has its contracts but nowhere to run them together. Bunrei and Mikoshi need a shared
-broker, their own databases, and an object store before `.bunrei` `state` and `jobs` and
-`.mikoshi` `items` and `ingest` can run against real infrastructure. The `.showcase`
-`acceptance` run needs the same stack. The root has no compose stack and no currency command, so
-no image pin it adds would ever be reported as trailing. The two services have no images yet, so
-this task builds the infrastructure only. The services run on the host against it until
-`.showcase` `services` adds them.
-
-**Behaviors**
-
-1. **Currency.** `mise run currency` reports every root pin that trails its latest release: the
-   mise tools, each stack service's base image, and pgvector's source version. It exits 0 when
-   nothing trails. `mise run upgrade` moves every trailing pin that isn't held. The root's
-   marathon configuration names `mise run currency` as its currency command. The script is the
-   workspace's shared currency script, unchanged, with an empty Go module list.
-2. **One project.** The stack is one compose project named for the root. Each service builds from
-   its own Dockerfile, whose base image is that service's one pin. No compose file names an
-   image. Each Dockerfile carries the service's configuration, command and health check, so
-   compose mounts no configuration. The check's compose validation passes.
-3. **NATS.** NATS 2 runs with JetStream on file storage, in a named volume. It reports healthy only
-   once JetStream is enabled, not merely once the listener is up. It keeps NATS's default 1 MB
-   maximum payload, which the `events` and `protocol` notes rely on. It opens no WebSocket
-   listener, and its monitoring endpoint stays inside the container. The stack creates no
-   stream; each service creates its own.
-4. **PostgreSQL.** Two servers, one for Bunrei and one for Mikoshi, run from one image: PostgreSQL
-   19 with pgvector 0.8.7 built from source.
-   - Each server has user, password and database `app`, its own named volume and its own port.
-   - Each reports healthy through `pg_isready` over TCP.
-   - pgvector is available on both servers, and the stack installs it on neither.
-5. **Object store.** SeaweedFS's S3 gateway runs with bucket auto-creation off and the published
-   development credentials admin/secret. It reports healthy only once a signed request succeeds.
-   Its data sits in a named volume. The stack creates no bucket; each service creates its own on
-   start.
-6. **Ports.** Every published port binds to 127.0.0.1. Every default collides with no other
-   workspace stack's default, and an environment variable overrides each one.
-7. **Lifecycle.**
-   - `up` builds and waits until every service is healthy, and prints the stack's logs if it
-     fails.
-   - `down` stops the stack and keeps its volumes, so data survives a restart.
-   - `reset` stops the stack and drops its volumes.
-8. **Smoke.** A smoke task runs against the running stack, using only the containers' own tools,
-   so it needs no client on the host. It proves:
-   - JetStream accepts a stream on file storage.
-   - `CREATE EXTENSION vector` succeeds on each PostgreSQL server, then is rolled back.
-   - An object put through the S3 gateway into a new bucket reads back after a restart.
-9. **Stack note.** The root's context gains a note on the stack, and the README and the capability
-   map's "Compose stack" entry link to it. The note gives:
-   - each service, its port and override variable, and its credentials, marked as published
-     development values;
-   - how a service running on the host reaches each one;
-   - Torii's base URL for each alias on gb10-2, the key class each service holds (Bunrei bulk,
-     Mikoshi interactive), and the tasks that issue the keys (`.bunrei` `jobs`, `.mikoshi`
-     `hybrid-search`);
-   - that the services join in `.showcase` `services`.
-
-**Test seams**
-
-- The stack through its mise tasks: `up`, `down`, `reset`, smoke, and the check's compose
-  validation.
-- The currency command.
-
-**Slices**
-
-1. **Root currency.** The shared currency script, the `currency` and `upgrade` tasks, the crane
-   pin, an empty Go module list, and the marathon currency command. Done when currency exits 0
-   and the check passes.
-2. **NATS.** The compose project, the NATS service, the lifecycle tasks, and the smoke's JetStream
-   proof. Currency covers NATS's pin.
-3. **PostgreSQL.** The pgvector image, copied from Mikoshi's, and its two servers, with the smoke's
-   extension proof on each. Currency covers the base image and pgvector's source.
-4. **SeaweedFS.** The S3 gateway and the smoke's put, restart and read proof. Currency covers its
-   pin.
-5. **Stack note.** The note, the README, and the capability map entry marked built, matching what
-   the slices built.
-
-**Out of scope**
-
-- Bunrei's and Mikoshi's service containers (`.showcase` `services`), and Mikoshi's image
-  (`.mikoshi` `image`).
-- Torii itself, and issuing either consumer key.
-- Stream, bucket and database schemas, retentions, and S3 lifecycle rules: the services' tasks
-  own them.
-- An observability profile (backlog: `cross-service-tracing`).
-- An integration profile on tmpfs.
-- CI.
-
-**Door**
-
-Two-way. Nothing is released, no consumer depends on the stack yet, and every pin and port can
-move.
-
-## Progress
-
-slices 5/5 committed · standards ✓ (2 fixes) · spec ✓ (1 gap closed) · editor ✓
 
 ## Decisions
 
