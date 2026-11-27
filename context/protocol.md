@@ -103,6 +103,12 @@ profile resolves to a docinfer pipeline, and ListProfiles returns that pipeline'
 The extraction spec is docinfer's `Extract`, and it is optional. Bunrei refuses one that marshals
 past 256 KiB, so the queued event that carries it stays within NATS's 1 MB `max_payload`.
 
+The extraction runs per source: once on each output text, image description, and transcript,
+never on metadata. Two more scopes are planned at docinfer's next minor, which `.bunrei`
+`document-extraction` builds: once over a job's whole text, and over a video's timeline, its
+frames' descriptions and its transcript ordered by source time. `.bunrei` `api` and `.mikoshi`
+`ingest` read their shapes.
+
 ## What a batch lacks
 
 A result batch carries neither its input content's SHA-256 nor the producing profile
@@ -122,7 +128,7 @@ part of the protocol.
 `.bunrei` `api` builds the `client` module and Bunrei's routes against this note, and its client
 tests are the note's executable proof. A change to the protocol reaches:
 
-- `.bunrei`: `upload` and `api`.
+- `.bunrei`: `upload`, `document-extraction`, and `api`.
 - `.mikoshi`: `browser-upload`, `items`, and `ingest`.
 - `.foundation`: [`events`](events.md), whose `started` carries the resolved `Profile`.
 - `.showcase`: `presentation`.
