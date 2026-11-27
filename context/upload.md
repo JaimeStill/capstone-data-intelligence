@@ -139,5 +139,5 @@ A change to the upload reaches:
 
 - `.bunrei`: `upload` and `api`.
 - `.mikoshi`: `browser-upload`, `items`, and `ingest`.
-- `.foundation`: `events`.
+- `.foundation`: [`events`](events.md).
 - `.showcase`: `presentation`.
