@@ -1,10 +1,16 @@
-# The root's tools and its check.
+# The root's tools, its check, and its currency tasks.
+# See architecture/principles/rolling-currency.md
 [settings]
 task.run_auto_install = false
 
 [tools]
+"aqua:google/go-containerregistry" = "0.22.1"
 "github:standards-lab/claude-plugins" = { version = "0.24.1", version_prefix = "marathon/v" }
+jq = "1.8.2"
 shellcheck = "0.11.0"
+
+[env]
+GO_MODULES = ""
 
 [tasks.check]
 description = "Validate the compose stack when one exists, shellcheck every script, then run lint-context and lint-references; writes nothing"
@@ -21,3 +27,11 @@ for lint in lint-context lint-references; do
 done
 exit "$fail"
 '''
+
+[tasks.currency]
+description = "Report every mise tool, action pin, image tag, Dockerfile FROM tag, and Dockerfile source ARG behind its latest, a held one with its reason; writes nothing"
+run = "bash scripts/currency.sh report"
+
+[tasks.upgrade]
+description = "Bump the mise tools, action pins, image tags, Dockerfile FROM tags, and Dockerfile source ARGs to their latest, but a held one; rewrites mise.toml, the workflows, and the compose files"
+run = "bash scripts/currency.sh upgrade"
