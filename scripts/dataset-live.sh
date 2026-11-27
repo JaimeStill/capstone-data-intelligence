@@ -10,12 +10,12 @@
 #
 # Prerequisites, none of which it starts:
 # - the root's compose stack, through `mise run stack:up`, for postgres-mikoshi on 127.0.0.1:5442;
-# - Mikoshi running on the host against that server, its MIKOSHI_DATABASE_PORT set to 5442 and its
-#   MIKOSHI_DATABASE_PASSWORD to the stack's development password, app;
+# - Mikoshi running on the host against that server;
 # - MIKOSHI_URL naming that Mikoshi, http://localhost:8080 unless set;
 # - curl and jq on PATH.
 #
 # usage: scripts/dataset-live.sh [definition], dataset/dataset.json unless given
+# See context/stack.md
 set -euo pipefail
 
 root=$(cd "$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")/.." && pwd)

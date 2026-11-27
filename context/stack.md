@@ -67,3 +67,15 @@ their service's key with ai-hosting's `hosting key issue`, into that repository'
 
 Bunrei and Mikoshi run on the host against these loopback ports until `.showcase` `services`
 brings them into the stack.
+
+Mikoshi runs from its checkout against `postgres-mikoshi`:
+
+- Under `MIKOSHI_ENV=local`, Mikoshi's local overlay already names the stack's host, database,
+  and user, but port 5440. Set `MIKOSHI_DATABASE_PORT=5442`, and set the password `app` through
+  `MIKOSHI_DATABASE_PASSWORD=app` or a `secrets.json`.
+- The server embeds the web client, so `client:build` runs first; Mikoshi's `mise run serve`
+  runs both.
+- Mikoshi runs its migrations, the `vector` extension's included, at startup.
+- It serves on 127.0.0.1:8080, which the dataset suite's default `MIKOSHI_URL` reaches.
+
+`mise run dataset:live` exercises it ([`dataset.md`](dataset.md), "Commands").

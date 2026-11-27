@@ -4,6 +4,7 @@
 # with the summary from its `# dataset:summary=` line. It resolves its own path, so it runs from
 # any working directory; a new command is a new dataset-<group>-<verb> file here, with nothing to
 # register. An unknown command or a usage error goes to stderr and exits 2.
+# See context/dataset.md
 set -euo pipefail
 
 dir=$(dirname "$(readlink -f -- "${BASH_SOURCE[0]}")")
