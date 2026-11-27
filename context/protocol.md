@@ -48,12 +48,12 @@ type Job struct {
     Error    string
 }
 type Manifest struct {
-    Batches  int       `json:"batches"`
-    Chunks   int       `json:"chunks"`
-    Digest   string    `json:"digest"`
-    Attempts []Attempt `json:"attempts"` // one per attempt, in order
+    Batches  int
+    Chunks   int
+    Digest   string
+    Attempts []Attempt // one per attempt, in order
 }
-type Attempt struct { Done *job.Done `json:"done,omitempty"` }
+type Attempt struct{ Done *job.Done }
 ```
 
 `docinfer.Extract` is docinfer's
