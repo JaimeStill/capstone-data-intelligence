@@ -2,7 +2,9 @@
 # smoke proves each service of the running compose stack does its job, using only the tools inside
 # the service's own container, and exits non-zero at the first proof that fails. nats creates a
 # JetStream stream on file storage and deletes it, speaking JetStream's API over the NATS text
-# protocol through the container's busybox nc.
+# protocol through the container's busybox nc. postgres-bunrei and postgres-mikoshi each create the
+# vector extension through the container's psql inside a transaction they roll back, so neither
+# server keeps it.
 # Run it through `mise run stack:smoke` once `mise run stack:up` has the stack healthy.
 #
 # usage: scripts/smoke.sh
@@ -44,4 +46,17 @@ smoke_nats() {
 	echo "smoke: nats: JetStream created and deleted a file-storage stream"
 }
 
+smoke_postgres() {
+	local service output
+	for service in postgres-bunrei postgres-mikoshi; do
+		if ! output=$(docker compose exec -T "$service" psql -h 127.0.0.1 -U app -d app -v ON_ERROR_STOP=1 -qAt \
+			-c 'BEGIN' -c 'CREATE EXTENSION vector' -c "SELECT extversion FROM pg_extension WHERE extname = 'vector'" \
+			-c 'ROLLBACK' 2>&1); then
+			fail "$service: CREATE EXTENSION vector failed: $output"
+		fi
+		echo "smoke: $service: pgvector $output created and rolled back"
+	done
+}
+
 smoke_nats
+smoke_postgres
