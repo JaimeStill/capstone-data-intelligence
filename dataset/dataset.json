@@ -73,8 +73,11 @@
           "filter": [
             {
               "field": "route",
-              "op": "eq",
-              "value": "vision"
+              "op": "in",
+              "value": [
+                "vision",
+                "vision-converted"
+              ]
             }
           ]
         },
