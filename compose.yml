@@ -1,4 +1,5 @@
 # capstone-data-intelligence's development stack, one file per service under compose/.
+# See context/stack.md
 
 name: capstone-data-intelligence
 

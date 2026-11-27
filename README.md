@@ -3,4 +3,5 @@
 The integration root of the data-intelligence capstone: the compose stack that runs Bunrei,
 Mikoshi, NATS, PostgreSQL with pgvector, and object storage against Torii; the contracts the two
 services build against; the acceptance run over docs-corpus v0.2.0; the demo dataset; and the
-presentation. Its working context is [`context/README.md`](context/README.md).
+presentation. Its working context is [`context/README.md`](context/README.md), and the stack's
+services, ports, and tasks are in [`context/stack.md`](context/stack.md).
