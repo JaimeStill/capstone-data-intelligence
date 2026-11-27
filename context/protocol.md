@@ -79,8 +79,8 @@ chunks, and digest count, and how a consumer checks them, is `events`'.
 - **CompleteUpload** takes a completed upload, a profile, and an optional extraction, and returns
   the job, queued. It is Bunrei's one upload Command; the upload itself, its offset included,
   which a client reads from the upload's own HEAD, is the [`upload`](upload.md) note's.
-- **CancelJob** takes a job's ID and requests its cancellation. The job ends `cancelled` unless it
-  has already ended.
+- **CancelJob** takes a job's ID and requests its cancellation. It returns nothing but an error;
+  the outcome is read through GetJob. The job ends `cancelled` unless it has already ended.
 
 ## Queries
 

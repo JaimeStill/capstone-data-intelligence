@@ -7,6 +7,10 @@ Mikoshi, in chunks that survive a dropped connection. It is
 handler and its clients rely on and cites the draft's sections rather than restating them. What a
 completed upload becomes in Bunrei is [`protocol.md`](protocol.md)'s.
 
+A client sends Upload-Draft-Interop-Version: 11 on every request to the upload, the creating POST
+and each PATCH, HEAD, and DELETE
+([Appendix B](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#appendix-B)).
+
 ## Creation
 
 A creating POST
@@ -22,8 +26,6 @@ carries:
 - Repr-Digest, the file's SHA-256 (see "Digests").
 - Content-Disposition, the file's name
   ([RFC 6266](https://www.rfc-editor.org/rfc/rfc6266)).
-- Upload-Draft-Interop-Version: 11
-  ([Appendix B](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#appendix-B)).
 
 The handler keeps the media type, the digest, and the file name with the upload.
 
@@ -33,8 +35,8 @@ It sends Location, with Upload-Limit, in a 104 (Upload Resumption Supported) int
 ([§12](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-12))
 only when the request's Upload-Draft-Interop-Version is 11, and that 104 carries the field back
 (Appendix B). When the request's Upload-Complete is ?0, the final response is a 201 (Created) with
-Location, Upload-Limit, and Upload-Complete: ?0. A final response to a request carrying ?1 is the
-target resource's
+Location, Upload-Limit, and Upload-Complete: ?0. A final response carrying Upload-Complete: ?1
+is the target resource's, not the upload protocol's
 ([§4.2.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-4.2.1)).
 
 ## Append
@@ -52,7 +54,9 @@ The append that ends the file carries Upload-Complete: ?1.
 An append whose Upload-Offset is not the upload's offset is a 409 (Conflict) with Upload-Complete:
 ?0 and the current offset in Upload-Offset
 ([§8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.2)).
-Its body is an RFC 9457 problem of the type `mismatching-upload-offset`
+Its body is an RFC 9457 problem of the type
+`https://iana.org/assignments/http-problem-types#mismatching-upload-offset`, which fills in the
+`expected-offset` and `provided-offset` members
 ([§14.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-14.1)).
 
 ## Resumption and cancellation
@@ -93,8 +97,9 @@ Repr-Digest ([§3](https://www.rfc-editor.org/rfc/rfc9530#section-3)) on the cre
 the whole file, and Content-Digest ([§2](https://www.rfc-editor.org/rfc/rfc9530#section-2)) on an
 append covers that chunk.
 
-Each value is a Structured Field Byte Sequence
-([RFC 9651 §3.3.5](https://www.rfc-editor.org/rfc/rfc9651#section-3.3.5)), as in
+Each field is a Structured Field Dictionary whose `sha-256` member is a Byte Sequence
+([RFC 9651 §3.2](https://www.rfc-editor.org/rfc/rfc9651#section-3.2),
+[§3.3.5](https://www.rfc-editor.org/rfc/rfc9651#section-3.3.5)), as in
 `sha-256=:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=:`. Every other field carries a SHA-256 in
 lowercase hex, `Job.SHA256` among them. The conversion decodes the base64 to the 32 bytes and
 writes them as lowercase hex, and the reverse encodes the bytes from the hex as base64.
