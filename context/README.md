@@ -8,9 +8,9 @@ that walks the signal flow layer by layer and argues for an elemental architectu
 `standards-lab/context/data-intelligence.md` holds the capstone's architecture, scope, and
 blocking points, and `standards-lab/docs/data-intelligence.md` its design detail. This repository
 takes their working detail in as its tasks settle it. Its goals live in the coordinator's roadmap:
-`capstone.data-intelligence.foundation` now, whose record is
-[`goals/capstone.data-intelligence.foundation.md`](goals/capstone.data-intelligence.foundation.md),
-then `capstone.data-intelligence.showcase`.
+`capstone.data-intelligence.foundation` built the contracts, the stack, and the demo dataset, and
+`capstone.data-intelligence.showcase` is active, its record under `goals/` once its first task is
+planned.
 
 ## Capability map
 
