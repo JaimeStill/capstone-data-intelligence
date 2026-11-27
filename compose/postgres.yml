@@ -1,0 +1,23 @@
+# The development stack's PostgreSQL servers with pgvector, one for Bunrei and one for Mikoshi,
+# both built from compose/postgres/Dockerfile.
+# See context/stack.md
+services:
+  postgres-bunrei:
+    build:
+      context: postgres
+    ports:
+      - "127.0.0.1:${POSTGRES_BUNREI_PORT:-5439}:5432"
+    volumes:
+      - capstone-data-intelligence-postgres-bunrei:/var/lib/postgresql
+
+  postgres-mikoshi:
+    build:
+      context: postgres
+    ports:
+      - "127.0.0.1:${POSTGRES_MIKOSHI_PORT:-5442}:5432"
+    volumes:
+      - capstone-data-intelligence-postgres-mikoshi:/var/lib/postgresql
+
+volumes:
+  capstone-data-intelligence-postgres-bunrei:
+  capstone-data-intelligence-postgres-mikoshi:
