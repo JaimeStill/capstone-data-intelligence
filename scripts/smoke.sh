@@ -3,10 +3,11 @@
 # the service's own container, and exits non-zero at the first proof that fails. nats creates a
 # JetStream stream on file storage and deletes it, speaking JetStream's API over the NATS text
 # protocol through the container's busybox nc. postgres-bunrei and postgres-mikoshi each create the
-# vector extension through the container's psql inside a transaction they roll back, so neither
-# server keeps it. seaweedfs creates a bucket and puts an object through the container's curl,
-# signing each request with --aws-sigv4, restarts the service, reads the object back, and deletes
-# both; a bucket left by an earlier failed run is emptied and deleted first.
+# vector extension through the container's psql inside a transaction they roll back, then confirm
+# the server kept no vector extension. seaweedfs creates a bucket and puts an object through the
+# container's curl, signing each request with --aws-sigv4, recreates the service's container so
+# only its volume carries the object, reads the object back, and deletes both; a bucket left by an
+# earlier failed run is emptied and deleted first.
 # Run it through `mise run stack:smoke` once `mise run stack:up` has the stack healthy.
 #
 # usage: scripts/smoke.sh
@@ -48,15 +49,24 @@ smoke_nats() {
 	echo "smoke: nats: JetStream created and deleted a file-storage stream"
 }
 
+psql_app() {
+	local service=$1
+	shift
+	docker compose exec -T "$service" psql -h 127.0.0.1 -U app -d app -v ON_ERROR_STOP=1 -qAt "$@"
+}
+
 smoke_postgres() {
-	local service output
+	local service version kept
 	for service in postgres-bunrei postgres-mikoshi; do
-		if ! output=$(docker compose exec -T "$service" psql -h 127.0.0.1 -U app -d app -v ON_ERROR_STOP=1 -qAt \
-			-c 'BEGIN' -c 'CREATE EXTENSION vector' -c "SELECT extversion FROM pg_extension WHERE extname = 'vector'" \
-			-c 'ROLLBACK' 2>&1); then
-			fail "$service: CREATE EXTENSION vector failed: $output"
+		version=$(psql_app "$service" -c 'BEGIN' -c 'CREATE EXTENSION vector' \
+			-c "SELECT extversion FROM pg_extension WHERE extname = 'vector'" -c 'ROLLBACK' 2>&1) ||
+			fail "$service: CREATE EXTENSION vector failed: $version"
+		kept=$(psql_app "$service" -c "SELECT count(*) FROM pg_extension WHERE extname = 'vector'" 2>&1) ||
+			fail "$service: extension query failed: $kept"
+		if [ "$kept" != 0 ]; then
+			fail "$service: the vector extension outlived its rollback: $kept"
 		fi
-		echo "smoke: $service: pgvector $output created and rolled back"
+		echo "smoke: $service: pgvector $version created and rolled back"
 	done
 }
 
@@ -72,16 +82,15 @@ smoke_seaweedfs() {
 	output=$(s3 -X PUT "$bucket" 2>&1) || fail "seaweedfs: bucket create failed: $output"
 	output=$(s3 -X PUT --data-binary "$content" "$bucket/object" 2>&1) ||
 		fail "seaweedfs: object put failed: $output"
-	output=$(docker compose restart seaweedfs 2>&1) || fail "seaweedfs: restart failed: $output"
-	output=$(docker compose up -d --wait seaweedfs 2>&1) ||
-		fail "seaweedfs: not healthy after restart: $output"
+	output=$(docker compose up -d --wait --force-recreate seaweedfs 2>&1) ||
+		fail "seaweedfs: not healthy after recreate: $output"
 	output=$(s3 "$bucket/object" 2>&1) || fail "seaweedfs: object get failed: $output"
 	if [ "$output" != "$content" ]; then
 		fail "seaweedfs: object read back as '$output', not '$content'"
 	fi
 	output=$(s3 -X DELETE "$bucket/object" 2>&1) || fail "seaweedfs: object delete failed: $output"
 	output=$(s3 -X DELETE "$bucket" 2>&1) || fail "seaweedfs: bucket delete failed: $output"
-	echo "smoke: seaweedfs: an object survived a restart, then it and its bucket were deleted"
+	echo "smoke: seaweedfs: an object survived its container's recreation, then it and its bucket were deleted"
 }
 
 smoke_nats
