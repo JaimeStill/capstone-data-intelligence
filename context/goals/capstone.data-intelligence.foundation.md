@@ -1,8 +1,8 @@
 # goal · capstone.data-intelligence.foundation
 
-- **State:** building
-- **Task:** demo-dataset
-- **Branch:** demo-dataset
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
@@ -11,7 +11,7 @@
 3. [x] events
 4. [x] stack
 5. [x] athena-mapping
-6. [ ] demo-dataset
+6. [x] demo-dataset
 
 ## Task brief · demo-dataset
 
@@ -119,10 +119,6 @@ Items, records, and references load in `.showcase`.
 Two-way. All work is in the root. Fetched files stay in a gitignored cache and are never
 committed. Load and reset touch only a local Mikoshi database that can be dropped.
 
-## Progress
-
-slices 0/8 committed · standards — · spec — · editor —
-
 ## Decisions
 
 - capstone: contracts (`chunks`, `protocol`, `events`) are designed here in `.foundation`; Bunrei and Mikoshi build against them, and a task that reads one opens its summary with "Waits on".
@@ -152,29 +148,19 @@ slices 0/8 committed · standards — · spec — · editor —
   is needed at all, excludes olmOCR by model origin, and is not a capstone deliverable.
 - athena-mapping: the Athena design review is stated only in the `athena` note; it runs outside
   the workspace with the Athena team. Rejected: a backlog entry.
-
 - demo-dataset: `.foundation` builds the definition, the check, fetch, and the context-tree
   load. Items, records, and references load in `.showcase` `demo-load`. Rejected: loading items
   before `.mikoshi` `items` exists.
-- demo-dataset: the share is the main body, beside `tour` and `views`, as three sibling top-level
+- demo-dataset: `share` is the main body, beside `tour` and `views`, as three sibling top-level
   explicit contexts. Rejected: query contexts inside the share's branches; limiting a filter to
   its parent's coverage.
-- demo-dataset: query-context filter fields are `route`, `kind`, and `duration`, all extracted
-  from the file. Rejected: date filters, because PDF CreationDate is the export or scan date.
-- demo-dataset: one entry per file, listing its context paths. A version is a new entry that
-  supersedes the old. Live files and live context changes are declared in the definition and
-  made in the client.
-- demo-dataset: `dataset/` holds the JSON, and the gitignored `dataset/.cache/` is keyed by
-  sha256. Rejected: `demo/` and `seeds/`.
+- demo-dataset: a query-context filter may test `route`, `kind`, and `duration`, all extracted
+  from the file; the views test `route` (`in` for images: `vision`, `vision-converted`) and
+  `duration`. Rejected: date filters, because PDF CreationDate is the export or scan date.
 - demo-dataset: a bash, curl, and jq `dataset <group> <verb>` suite, laid out like ai-hosting's
   `bin/`. Rejected: Hurl, go-database's Seeder, a Go program.
 - demo-dataset: a rerun converges by name path, and `tree reset` deletes through the API.
   Rejected: `stack:reset`, which drops Bunrei's cache.
-- demo-dataset: the office files come from a byte-reproducible PEP 723 uv script, with sha256
-  pinned. Rejected: pandoc, LibreOffice, hand-written OOXML.
-- demo-dataset: a looser admission rule (files are never committed). Provenance is url, sha256,
-  bytes, and credit, or manual with how-to steps, or a docs-corpus path with its v0.2.0 MANIFEST
-  sha256. Rejected: docs-corpus's admission rule.
 - demo-dataset: the share, tour, and authored lists are reviewed again in `.showcase`
   `demo-load`.
 
