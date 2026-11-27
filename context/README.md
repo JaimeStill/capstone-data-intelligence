@@ -19,6 +19,7 @@ then `capstone.data-intelligence.showcase`.
 - **Resumable upload** (built): the chunked HTTP upload, resumable after a dropped connection, that Bunrei and Mikoshi serve and their clients send, [`upload.md`](upload.md).
 - **Event protocol** (built): the events Bunrei and Mikoshi publish, their envelope and lineage, and the manifest that proves a job's results arrived whole, [`events.md`](events.md).
 - **Compose stack** (built): the NATS, PostgreSQL with pgvector, and SeaweedFS S3 servers that Bunrei and Mikoshi run against, with their host ports, credentials, and tasks, [`stack.md`](stack.md).
+- **Athena mapping** (built): Bunrei's fields onto Athena's `chunks`, its move to multilingual-e5-large, and what stays Athena's, as suggestions to Athena, [`athena.md`](athena.md).
 - **Demo dataset** (planned): `capstone.data-intelligence.foundation`, `demo-dataset`.
 - **Acceptance run** (planned): `capstone.data-intelligence.showcase`, `acceptance`.
 - **Presentation** (planned): `capstone.data-intelligence.showcase`, `presentation`.
