@@ -4,14 +4,11 @@
 # shellcheck source=tests/mikoshi.sh
 source "$(dirname "$0")/mikoshi.sh"
 
-# Prints the id of the top-level context with the name given in the stub's state.
 top_id() {
   jq -r --arg root "$root" --arg name "$1" \
     'first(.contexts[] | select(.parent_id == $root and .name == $name)) | .id' "$state"
 }
 
-# Prints the stub's state as one sorted line a context, {parent, name, kind, filter}, the parent
-# as its name, so two states built with different ids compare equal.
 tree_shape() {
   jq -c '.contexts as $all | [.contexts[] | {parent: (.parent_id as $p
     | first($all[] | select(.id == $p)).name), name, kind, filter}] | sort_by(.parent, .name)[]' \
@@ -33,7 +30,7 @@ context views: deleted (2 descendants)
 $definition: 3 deleted, 0 absent"
   assert_equal "contexts left" "$(jq -c '[.contexts[].name] | sort' "$state")" \
     '["foreign","inner","root"]'
-  assert_contains "unconfirmed first" "$(calls)" "-X DELETE -w"
+  assert_equal "unconfirmed deletes" "$(calls | grep -c -- '-X DELETE .*/api/contexts/[^?]*$')" 3
   assert_equal "confirmed deletes" "$(calls | grep -c -- '-X DELETE .*?confirm=2$')" 3
 }
 

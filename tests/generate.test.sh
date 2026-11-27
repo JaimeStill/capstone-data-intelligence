@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Tests for dataset source generate (lib/generate.py): two runs write the same four files, byte for
-# byte, and each is an OOXML package carrying the fixed core properties. They run the real
-# generator through uv with the caller's uv cache and Python installs; without uv or unzip, or
-# when uv can't reach the network for a package its cache lacks, each test prints a SKIP line.
+# Tests for dataset source generate (lib/generate.py): a run writes the four files, each with the
+# sha256 dataset/dataset.json pins for it. They run the real generator through uv with the caller's
+# uv cache and Python installs; without uv, or when uv can't reach the network for a package its
+# cache lacks, the test prints a SKIP line.
 # shellcheck source=tests/lib.sh
 source "$(dirname "$0")/lib.sh"
 
@@ -13,12 +13,9 @@ if command -v uv >/dev/null; then
   export UV_CACHE_DIR UV_PYTHON_INSTALL_DIR
 fi
 
-# Runs dataset source generate into the directory given and succeeds when it wrote the files;
-# otherwise prints a SKIP line when uv or unzip is missing or uv couldn't reach the network, or
-# fails the test, and returns 1 either way.
 generate() {
-  if ! command -v uv >/dev/null || ! command -v unzip >/dev/null; then
-    skip "uv and unzip must be on PATH; run mise install"
+  if ! command -v uv >/dev/null; then
+    skip "uv must be on PATH; run mise install"
     return 1
   fi
   run_dataset source generate "$1"
@@ -32,36 +29,14 @@ generate() {
   fi
 }
 
-test_two_runs_write_the_same_four_files() {
-  if ! generate "$tmp/first" || ! generate "$tmp/second"; then return 0; fi
-  assert_equal "first run's files" "$(ls "$tmp/first")" "$(printf '%s\n' "${files[@]}")"
-  assert_equal "second run's files" "$(ls "$tmp/second")" "$(printf '%s\n' "${files[@]}")"
+test_the_four_files_match_their_pins_in_the_definition() {
+  generate "$tmp/out" || return 0
+  assert_equal "files" "$(ls "$tmp/out")" "$(printf '%s\n' "${files[@]}")"
   local file
   for file in "${files[@]}"; do
-    cmp -s "$tmp/first/$file" "$tmp/second/$file" || fail "$file differs between the runs"
-  done
-}
-
-test_each_file_is_a_package_with_the_fixed_core_properties() {
-  generate "$tmp/out" || return 0
-  local file core
-  for file in "${files[@]}"; do
-    assert_contains "$file entries" "$(unzip -l "$tmp/out/$file")" "[Content_Types].xml"
-    core=$(unzip -p "$tmp/out/$file" docProps/core.xml)
-    assert_contains "$file creator" "$core" "TF LANTERN S3 Plans</dc:creator>"
-    assert_contains "$file last modified by" "$core" "<cp:lastModifiedBy>TF LANTERN S3 Plans</cp:lastModifiedBy>"
-    assert_contains "$file created" "$core" 'xsi:type="dcterms:W3CDTF">2026-03-0'
-    [[ $core =~ dcterms:modified[^\>]*\>2026-03-(0[5-9]|10)T ]] ||
-      fail "$file modified: [$core] has no fixed March 2026 modified date"
-  done
-}
-
-test_every_entry_has_the_fixed_timestamp() {
-  generate "$tmp/out" || return 0
-  local file dates
-  for file in "${files[@]}"; do
-    dates=$(unzip -Z -T "$tmp/out/$file" | awk '$1 ~ /^-/ { print $7 }' | sort -u)
-    assert_equal "$file entry timestamps" "$dates" 20260302.080000
+    assert_equal "$file sha256" "$(sha256sum "$tmp/out/$file" | cut -d' ' -f1)" \
+      "$(jq -r --arg name "$file" '.files[] | select(.generated == $name) | .sha256' \
+        "$repo/dataset/dataset.json")"
   done
 }
 
