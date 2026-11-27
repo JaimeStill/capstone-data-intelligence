@@ -100,8 +100,8 @@ Both extractions are planned in `.bunrei` `document-extraction` ([`protocol.md`]
 - The `ingest_jobs` queue.
 - The video pipeline's own work beyond extraction.
 - The vault, ACL, and version columns, and the `english` tsvectors.
-- Document metadata (`doc_meta_embeddings`) and document vectors (`document_vectors`), which Athena keeps
-  computing itself, through Torii's e5 once its spaces move.
+- Document metadata (`doc_meta_embeddings`) and document vectors (`document_vectors`), which
+  Athena keeps computing itself, through Torii's e5 once its spaces move.
 
 ## Assumptions
 

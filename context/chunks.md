@@ -70,12 +70,13 @@ Mikoshi's `ingest` writes chunks; `hybrid-search` reads their text, tsvector, an
 ### Embedding
 
 An embedding is keyed by its chunk text's SHA-256 and its space, so chunks with the same text share
-one vector per space, of its space's pgvector type. An embedding the endpoint refused, or that failed, is stored with its error
-and no vector: docinfer's error comes from one embeddings endpoint, so it belongs to one space.
-Embeddings share one table with an untyped `vector` column, and each space has a partial HNSW
-index over a cast to its dimensions, `embedding::vector(n)`, restricted to that space's rows.
-That shape serves `vector` spaces. Whether the other types take typed columns or expression
-indexes over the one `vector` column is for `.mikoshi` `pgvector-types` to prove.
+one vector per space, of its space's pgvector type. An embedding the endpoint refused, or that
+failed, is stored with its error and no vector: docinfer's error comes from one embeddings
+endpoint, so it belongs to one space. Embeddings share one table with an untyped `vector` column,
+and each space has a partial HNSW index over a cast to its dimensions, `embedding::vector(n)`,
+restricted to that space's rows. That shape serves `vector` spaces. Whether the other types take
+typed columns or expression indexes over the one `vector` column is for `.mikoshi`
+`pgvector-types` to prove.
 
 A query casts to use the index: a nearest-neighbour query that orders by the cast scans its space's
 index, and one without the cast misses every index. A vector of the wrong dimensions is refused in
@@ -152,10 +153,8 @@ tests are its executable proof.
 
 A change to the contract reaches:
 
-- `.mikoshi`: `store`, `contexts`, `ingest`, `hybrid-search`, and `lineage`, and two planned
-  tasks: `pgvector-types`, sqlate's support for every pgvector type, released as
-  `postgres/pgvector/v0.2.0`; and `space-switch`, after `ingest`, which adds the status, the
-  active marker, re-embedding by resubmission, rollback, and per-space type migration.
+- `.mikoshi`: `store`, `contexts`, `ingest`, `hybrid-search`, `lineage`, `pgvector-types`, and
+  `space-switch`.
 - `.foundation` [`events`](events.md) and `.bunrei` `api`, because Bunrei's result batches carry
   docinfer's [`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117) (its
   parts, sources, and chunks).
