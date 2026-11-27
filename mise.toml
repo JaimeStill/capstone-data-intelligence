@@ -22,6 +22,10 @@ run = "bash scripts/check.sh"
 description = "Run a dataset command: mise run dataset -- <group> <verb> [args...]; with no arguments, list the commands"
 run = "bin/dataset"
 
+[tasks."dataset:live"]
+description = "Run tree load, a second tree load, tree reset, and tree load against the Mikoshi at MIKOSHI_URL, asserting each step's counts and the tree it leaves; needs the stack up and Mikoshi running on 5442, and mise run check never runs it"
+run = "bash scripts/dataset-live.sh"
+
 [tasks.currency]
 description = "Report every mise tool, PEP 723 script package, action pin, image tag, Dockerfile FROM tag, and Dockerfile source ARG behind its latest, a held one with its reason; writes nothing"
 run = "bash scripts/currency.sh report"
