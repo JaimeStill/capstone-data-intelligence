@@ -23,7 +23,7 @@ description = "Run a dataset command: mise run dataset -- <group> <verb> [args..
 run = "bin/dataset"
 
 [tasks."dataset:live"]
-description = "Run tree load, a second tree load, tree reset, and tree load against the Mikoshi at MIKOSHI_URL, asserting each step's counts and the tree it leaves; needs the stack up and Mikoshi running on 5442, and mise run check never runs it"
+description = "Run tree load, a second tree load, tree reset, and tree load against the Mikoshi at MIKOSHI_URL, asserting each step's counts and the tree it leaves; needs the stack up and Mikoshi running against its PostgreSQL on 5442, and mise run check never runs it"
 run = "bash scripts/dataset-live.sh"
 
 [tasks.currency]

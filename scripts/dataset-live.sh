@@ -53,9 +53,10 @@ echo "== dataset tree load"
 first=$("$root/bin/dataset" tree load "$definition") || fail "dataset tree load exited $?"
 printf '%s\n' "$first"
 summary=${first##*$'\n'}
-[[ $summary =~ ^.*:\ ([0-9]+)\ created,\ ([0-9]+)\ exists,\ 0\ differ,\ 0\ skipped$ ]] &&
-  ((BASH_REMATCH[1] + BASH_REMATCH[2] == total)) ||
+if ! [[ $summary =~ ^.*:\ ([0-9]+)\ created,\ ([0-9]+)\ exists,\ 0\ differ,\ 0\ skipped$ ]] ||
+  ((BASH_REMATCH[1] + BASH_REMATCH[2] != total)); then
   fail "dataset tree load summary is [$summary], want $total created or existing, none differing"
+fi
 
 step "0 created, $total exists, 0 differ, 0 skipped" tree load
 step "$tops deleted, 0 absent" tree reset
