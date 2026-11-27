@@ -18,7 +18,7 @@ then `capstone.data-intelligence.showcase`.
 - **Bunrei's protocol** (built): the Queries and Commands Bunrei's callers send it, and the types they exchange, [`protocol.md`](protocol.md).
 - **Resumable upload** (built): the chunked HTTP upload, resumable after a dropped connection, that Bunrei and Mikoshi serve and their clients send, [`upload.md`](upload.md).
 - **Event protocol** (built): the events Bunrei and Mikoshi publish, their envelope and lineage, and the manifest that proves a job's results arrived whole, [`events.md`](events.md).
-- **Compose stack** (built): NATS, PostgreSQL with pgvector for Bunrei and Mikoshi, and a SeaweedFS S3 gateway, their host ports and credentials, and the tasks that run them, [`stack.md`](stack.md).
+- **Compose stack** (built): the NATS, PostgreSQL with pgvector, and SeaweedFS S3 servers that Bunrei and Mikoshi run against, with their host ports, credentials, and tasks, [`stack.md`](stack.md).
 - **Demo dataset** (planned): `capstone.data-intelligence.foundation`, `demo-dataset`.
 - **Acceptance run** (planned): `capstone.data-intelligence.showcase`, `acceptance`.
 - **Presentation** (planned): `capstone.data-intelligence.showcase`, `presentation`.

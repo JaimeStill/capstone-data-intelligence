@@ -30,24 +30,28 @@ directory, and SeaweedFS's store.
 - `mise run stack:up` builds and starts the stack and waits until every service is healthy.
 - `mise run stack:down` stops it and keeps the volumes.
 - `mise run stack:reset` stops it and drops the volumes, so the next `stack:up` starts empty.
-- `mise run stack:smoke` proves each service of the running stack does its job and keeps nothing
-  it made; [`smoke.sh`](../scripts/smoke.sh) says how.
+- `mise run stack:smoke` proves each service of the running stack does its job, then deletes
+  what it created; [`smoke.sh`](../scripts/smoke.sh) says how.
 
-`mise run currency` reports the stack's pins, each Dockerfile's `FROM` tag and pgvector's source
-version, beside the root's tools, and `mise run upgrade` bumps them.
+`mise run currency` reports every root pin that trails its latest release: the stack's Dockerfile
+`FROM` tags, pgvector's source version, and the root's mise tools. `mise run upgrade` moves those
+pins to their latest release.
 
-## What the stack leaves out
+## What the stack creates and exposes
 
-- No JetStream stream, S3 bucket, database schema, or extension: each service creates its own.
-  SeaweedFS creates no bucket on first write.
+The stack creates nothing a service keeps, and exposes only the ports in the table above.
+
+- The stack creates no JetStream stream, S3 bucket, database schema, or extension: each service
+  creates its own. The S3 gateway's bucket auto-creation is off, so a write never creates a
+  bucket.
 - NATS keeps its default 1 MB `max_payload`, which [`events.md`](events.md), "Result batches", and
   [`protocol.md`](protocol.md), "Profiles and extraction", size against.
 - NATS serves its monitoring endpoint on the container's loopback only (`127.0.0.1:8222`), for
   the health check; neither the host nor the other containers reach it.
 - NATS opens no WebSocket listener; the browser reads Mikoshi's SSE relay
   ([`events.md`](events.md), "The browser's transport").
-- pgvector is built into both PostgreSQL servers, and neither installs it: each service creates
-  the `vector` extension in its own database.
+- Both PostgreSQL servers have pgvector built in, and the stack creates the `vector` extension in
+  neither: each service creates it in its own database.
 
 ## Torii
 
