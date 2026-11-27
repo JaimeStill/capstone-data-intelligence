@@ -147,6 +147,6 @@ A change to the contract reaches:
 - `.foundation` `events` and `.bunrei` `api`, because Bunrei's result batches carry docinfer's
   [`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117) (its parts,
   sources, and chunks).
-- `.foundation` `protocol`, because it and `events` must between them carry what a batch alone
-  lacks: the input content's SHA-256, and the processing profile that names the space and the
-  chunker.
+- `.foundation` [`protocol`](protocol.md), because it and `events` must between them carry what a
+  batch alone lacks: the input content's SHA-256, and the processing profile that names the space
+  and the chunker.

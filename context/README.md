@@ -15,7 +15,7 @@ then `capstone.data-intelligence.showcase`.
 ## Capability map
 
 - **Chunk contract** (built): the records Mikoshi stores from docinfer's chunks and their embedding spaces, [`chunks.md`](chunks.md).
-- **Bunrei's protocol** (planned): `capstone.data-intelligence.foundation`, `protocol`.
+- **Bunrei's protocol** (built): the Queries and Commands Bunrei's callers send it, and the types they exchange, [`protocol.md`](protocol.md).
 - **Event protocol** (planned): `capstone.data-intelligence.foundation`, `events`.
 - **Compose stack** (planned): `capstone.data-intelligence.foundation`, `stack`.
 - **Demo dataset** (planned): `capstone.data-intelligence.foundation`, `demo-dataset`.
