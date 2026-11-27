@@ -1,8 +1,8 @@
 # goal · capstone.data-intelligence.foundation
 
-- **State:** building
-- **Task:** athena-mapping
-- **Branch:** athena-mapping
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
@@ -10,123 +10,8 @@
 2. [x] protocol
 3. [x] events
 4. [x] stack
-5. [ ] athena-mapping
+5. [x] athena-mapping
 6. [ ] demo-dataset
-
-## Task brief · athena-mapping
-
-**Problem**
-
-`~/s2va/athena` runs its own ingest: Tesseract, Whisper, a summary chain, Arctic embeddings with
-a document-name header, its own embedding spaces, and in-place re-embedding. Bunrei and Mikoshi
-replace that layer. Nothing yet states how Athena's ingest lands on Bunrei's API, what stays
-Athena's, or where the capstone falls short of Athena.
-
-Mapping Athena exposed four gaps in the root's contracts, and the capstone must close them:
-
-- An embedding space has no lifecycle: no status, no active marker, no re-embed rule.
-- A space has no pgvector type.
-- Extraction is per source text only, with no document or video-timeline scope.
-- The coordinator's facts about Athena are stale, and its `sparse_rows` open item is moot.
-
-**Behaviors**
-
-1. `athena.md` opens by saying it states the capstone's state against Athena as suggestions.
-   Athena may not adopt them, and a design review with the Athena team, outside the workspace,
-   aligns the two sets of goals.
-2. `athena.md` states the principle that each service owns its own data. Athena is a second
-   consumer of Bunrei, relies only on Bunrei's API (Commands, Queries, events, GetOutput), never
-   on Bunrei's state, and keeps its own tables.
-3. `athena.md` holds one central table that maps Bunrei's fields (the Job, `bunrei.job.started`'s
-   resolved Profile, and a result batch's parts, sources and chunks) onto the columns of Athena's
-   `chunks`. Each row says where Athena's key or column differs from the chunk contract:
-   - `<version>-<i>` against text SHA-256 plus chunker plus index;
-   - no span column;
-   - summary and processing metadata only on chunk 0;
-   - a failed embedding dropped rather than stored with its error;
-   - `english` tsvectors weighted by filename against `simple`.
-4. `athena.md` states the move to multilingual-e5-large as a blue/green between two Athena spaces:
-   - Athena resubmits every document through Bunrei under the e5 profile into a new space.
-   - The Arctic space serves until the e5 space is ready and activated.
-   - Athena's in-place re-embed command and its space worker's embedding role retire.
-   - Athena's status and active-space setting map onto the contract's.
-   - Athena's `halfvec` default ports directly to a space's type.
-5. `athena.md` states that the contract stays keyed by bare chunk text. Athena's per-chunk
-   document-name header is dropped (Athena measured 70% against 65% right-document-first), and
-   its gain is expected back through docinfer's metadata source.
-6. `athena.md` maps Whisper onto docinfer's transcription. It maps Tesseract onto docinfer's
-   vision and suggests dropping Tesseract pending the reframed OCR spike, naming what Athena would
-   lose: the confidence gate, reading on CPU alone, and verbatim text with no invented words.
-7. `athena.md` maps Athena's document summary onto document-scope extraction, and its video
-   summary and key moments onto video-timeline extraction. Both are planned in `.bunrei`
-   `document-extraction`.
-8. `athena.md` lists what stays Athena's, one line each:
-   - regex and pattern entities, including MAC and MGRS;
-   - `sparse_rows` places and dates;
-   - TEI rerank;
-   - the `ingest_jobs` queue;
-   - the video pipeline's own work beyond extraction;
-   - vault, ACL and version columns, and the `english` tsvectors;
-   - document metadata and document vectors, which Athena computes through Torii's e5.
-9. `athena.md` names its assumptions, one line each, and cites Athena by commit.
-10. `chunks.md` "Embedding space" gains:
-    - a status: building, ready or failed;
-    - a single active space;
-    - the re-embed rule: a new space fills while the active one serves and activates only when
-      ready, re-embedding means resubmitting under the new profile, and the SQL stays Mikoshi's.
-11. `chunks.md` makes a space's pgvector type (`vector`, `halfvec`, `bit` or `sparsevec`) part of
-    its identity, in "Embedding space" and "Embedding". The storage shape is left for
-    `.mikoshi` `pgvector-types` to prove.
-12. `chunks.md` "Ownership" names `.mikoshi` `pgvector-types` and `space-switch` among the tasks a
-    change reaches.
-13. `protocol.md` "Profiles and extraction" states the extraction scope as planned at docinfer's
-    next minor through `.bunrei` `document-extraction`: per source, once over a job's whole text,
-    or a video's timeline of frames plus transcript by source time. Its Ownership names that
-    task.
-14. `events.md` states that `inference` also carries document and timeline extractions once
-    docinfer's minor lands. The note stays within its word budget, with the detail in
-    `protocol.md`.
-15. `context/README.md`'s capability map lists the Athena mapping as built, linking
-    `athena.md`.
-16. `mise run check` passes. Every note is within its `lint-context` budget and every link
-    resolves.
-
-**Test seams**
-
-- `mise run check`: `lint-context`, for kinds, budgets, the capability-map shape and relative
-  links, and `lint-references`.
-- A coherence read of `athena.md` against `chunks.md`, `protocol.md` and `events.md`, and against
-  Athena at the cited commit.
-
-**Slices**
-
-No upgrade slices: the root's currency is current.
-
-1. **Space lifecycle and type.** `chunks.md`, for behaviors 10–12.
-2. **Extraction scope.** `protocol.md` and `events.md`, for behaviors 13–14, trimming `events.md`
-   where needed to stay in budget.
-3. **The Athena note.** `athena.md` and the capability-map line, for behaviors 1–9 and 15. It
-   builds on the amended contracts.
-
-**Out of scope**
-
-- Any change to Athena, which is read only. Its migration and the design review sit outside the
-  workspace.
-- Code in Mikoshi, Bunrei, sqlate or docinfer. Their tasks are added by pending edits.
-- The coordinator's edits themselves, which wait in the goal record until sync.
-- The OCR spike, and any decision on an OCR tier.
-- Executable proof of the mapping.
-
-**Door**
-
-Two-way. The task changes notes only and releases nothing. The amended contracts are planned
-shapes that their building tasks prove or revise.
-
-## Progress
-
-slices 3/3 committed · standards done · spec done (1 round, 3 gaps closed) · editor done
-- editor questions, settled in the session: a type-only change fills from the `vector` space by
-  cast; one active space per store; the OCR spike keeps the olmOCR-bench dataset
 
 ## Decisions
 
