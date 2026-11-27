@@ -104,10 +104,10 @@ The extraction spec is docinfer's `Extract`, and it is optional. Bunrei refuses 
 past 256 KiB, so the queued event that carries it stays within NATS's 1 MB `max_payload`.
 
 The extraction runs per source: once on each output text, image description, and transcript,
-never on metadata. Two more scopes are planned at docinfer's next minor, which `.bunrei`
-`document-extraction` builds: once over a job's whole text, and over a video's timeline, its
-frames' descriptions and its transcript ordered by source time. `.bunrei` `api` and `.mikoshi`
-`ingest` read their shapes.
+never on metadata. `.bunrei` `document-extraction` plans two more scopes at docinfer's next
+minor: once over a job's whole text, and once over a video's timeline, which orders its frames'
+descriptions and its transcript by source time. `.bunrei` `api` and `.mikoshi` `ingest` read the
+shapes these scopes produce.
 
 ## What a batch lacks
 

@@ -20,12 +20,13 @@ model and the settings of its document convention) plus the dimensions and the p
 metric; the query prefix, from the query convention docinfer's `Profile` reports as
 `embedding_query`; and a status, building, ready, or failed.
 
-One space is active, and searches read it. A model change or a type change adds a space, which
-fills while the active space serves and becomes active only once it is ready. Filling it means
-resubmitting the items to Bunrei under a profile that names the new space; docinfer's and
-docproc's content-keyed caches then recompute only the embeddings. A `halfvec` or `bit` space can
-instead be filled from a `vector` space without calling the model; a `sparsevec` space needs a
-sparse model. The SQL that fills and activates a space is Mikoshi's.
+One space in the store is active, and searches read it. A model change or a type change adds a
+space, which fills while the active space serves and becomes active only once it is ready. A model
+change fills it by resubmitting the items to Bunrei under a profile that names the new space; with
+docinfer's and docproc's content-keyed caches, only the embeddings are computed again. A type
+change of the same model fills a `halfvec` or `bit` space from its `vector` space without calling
+the model; a `sparsevec` space needs a sparse model, so it is a model change. The SQL that fills
+and activates a space is Mikoshi's.
 
 The chunker is not part of a space. docinfer keys an embedding by the embeddings identity and the
 chunk text's SHA-256
@@ -70,13 +71,13 @@ Mikoshi's `ingest` writes chunks; `hybrid-search` reads their text, tsvector, an
 ### Embedding
 
 An embedding is keyed by its chunk text's SHA-256 and its space, so chunks with the same text share
-one vector per space, of its space's pgvector type. An embedding the endpoint refused, or that
+one vector per space, of that space's pgvector type. An embedding the endpoint refused, or that
 failed, is stored with its error and no vector: docinfer's error comes from one embeddings
 endpoint, so it belongs to one space. Embeddings share one table with an untyped `vector` column,
 and each space has a partial HNSW index over a cast to its dimensions, `embedding::vector(n)`,
-restricted to that space's rows. That shape serves `vector` spaces. Whether the other types take
-typed columns or expression indexes over the one `vector` column is for `.mikoshi`
-`pgvector-types` to prove.
+restricted to that space's rows. That shape serves `vector` spaces; `.mikoshi` `pgvector-types`
+is planned to prove whether the other types take typed columns or expression indexes over the one
+`vector` column.
 
 A query casts to use the index: a nearest-neighbour query that orders by the cast scans its space's
 index, and one without the cast misses every index. A vector of the wrong dimensions is refused in

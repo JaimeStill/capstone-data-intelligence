@@ -1,18 +1,18 @@
 # Athena onto Bunrei
 
-This note states the capstone's state against Athena, at
-[`06ad4e1e6`](https://github.com/s2va/athena/tree/06ad4e1e670db27d61903a1fb00769055f66ade3), as
-suggestions. Athena may not adopt them; a design review with the Athena team, outside this
-workspace, aligns the two sets of goals. Paths below are under Athena's `server/`.
+This note maps Athena's ingest, read at
+[`06ad4e1e6`](https://github.com/s2va/athena/tree/06ad4e1e670db27d61903a1fb00769055f66ade3), onto
+Bunrei and the capstone's contracts, as suggestions to Athena. Athena may not adopt them; a design
+review with the Athena team, outside this workspace, is planned to align the two sets of goals.
+Paths below are under Athena's `server/`.
 
 ## Each service owns its data
 
 Athena would be Bunrei's second consumer, beside Mikoshi. It relies only on Bunrei's API: the
-Commands and Queries of [`protocol.md`](protocol.md), the events of [`events.md`](events.md), and
-GetOutput. It never reads Bunrei's state, and it keeps its own tables. It relies on the
-[`chunks`](chunks.md), [`protocol`](protocol.md), and [`events`](events.md) contracts as they
-stand; the space status, active space, pgvector type, and extraction scopes this mapping needed
-are stated there.
+Commands and Queries of [`protocol.md`](protocol.md), GetOutput among them, and the events of
+[`events.md`](events.md). It never reads Bunrei's state, and it keeps its own tables. The space
+status, active space, and pgvector type this mapping needed are stated in
+[`chunks.md`](chunks.md), and the extraction scopes in `protocol.md`.
 
 ## Bunrei's fields onto Athena's chunks
 
@@ -61,7 +61,7 @@ multilingual-e5-large is a blue/green between two Athena spaces:
   [`chunks.md`](chunks.md), "Embedding space".
 - Athena's `halfvec` default for a new space
   ([`embedding_spaces.go`](https://github.com/s2va/athena/blob/06ad4e1e670db27d61903a1fb00769055f66ade3/server/internal/postgres/embedding_spaces.go#L31))
-  ports directly to a space's type.
+  maps directly onto a space's pgvector type.
 
 ## The embedded text
 

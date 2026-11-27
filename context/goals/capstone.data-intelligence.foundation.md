@@ -124,7 +124,9 @@ shapes that their building tasks prove or revise.
 
 ## Progress
 
-slices 0/3 committed · standards — · spec — · editor —
+slices 3/3 committed · standards done · spec done (1 round, 3 gaps closed) · editor done
+- editor questions, settled in the session: a type-only change fills from the `vector` space by
+  cast; one active space per store; the OCR spike keeps the olmOCR-bench dataset
 
 ## Decisions
 
@@ -147,14 +149,6 @@ slices 0/3 committed · standards — · spec — · editor —
   Rejected: building from Mikoshi's checkout.
 - stack: each service has its own PostgreSQL server. Rejected: one server with a database per
   service.
-- athena-mapping: each service owns its data; Athena relies only on Bunrei's API, never its
-  state, and keeps its tables. Rejected: Athena adopting the contract's records.
-- athena-mapping: a model change re-embeds by resubmitting through Bunrei into a new space,
-  blue/green. Rejected: in-place re-embed, which keeps two chunkers.
-- athena-mapping: embeddings stay keyed by bare chunk text; a document's name reaches search
-  through the metadata source. Rejected: a per-document embed header.
-- athena-mapping: a space's pgvector type (`vector`, `halfvec`, `bit`, `sparsevec`) is part of
-  its identity. Rejected: type as an attribute; `vector` only.
 - athena-mapping: `.mikoshi` builds the space switch (`pgvector-types` on sqlate, then
   `space-switch`, after `ingest`). Rejected: switches after the capstone; a sqlate goal after it.
 - athena-mapping: document-scope and video-timeline extraction are built in docinfer by `.bunrei`
@@ -192,6 +186,10 @@ slices 0/3 committed · standards — · spec — · editor —
 - coordinator · docs/data-intelligence.md:
   - "Athena onto Bunrei" becomes a link to the root's `athena` note.
   - "Open items": drop `athena-mapping`'s typed cells for `sparse_rows`.
+  - "Embedding spaces": a model change adds a space and fills it by resubmitting the items through
+    Bunrei, while the active space serves until the new one is ready, linking the root's `chunks`
+    note, "Embedding space", in place of "re-embeds the stored chunks (blue/green, switched after a
+    recall evaluation)".
 - coordinator · context/data-intelligence.md: its pointer to "Athena onto Bunrei" links the
   root's `athena` note.
 - coordinator · roadmap/capstone.data-intelligence.mikoshi.toml:
@@ -206,6 +204,6 @@ slices 0/3 committed · standards — · spec — · editor —
   docinfer's next minor.
 - coordinator · roadmap/experiment.ocr.spike-scanned-documents.toml and docs/ai-strategy.md:
   reframe the spike as "is an OCR tier needed at all beside self-hosted vision" (Tesseract
-  against Gemma 4 and a dense vision model; olmOCR dropped for model origin; measure fidelity,
-  cost, latency, CPU throughput, and boxes and confidence). State that it is not part of the
-  capstone deliverable.
+  against Gemma 4 and a dense vision model; olmOCR's model dropped for model origin, the
+  olmOCR-bench dataset kept; measure fidelity, cost, latency, CPU throughput, and boxes and
+  confidence). State that it is not part of the capstone deliverable.
