@@ -5,3 +5,6 @@
 # secrets
 .env
 secrets.json
+
+# dataset
+dataset/.cache/
