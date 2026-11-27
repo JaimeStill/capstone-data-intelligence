@@ -1,103 +1,17 @@
 # goal · capstone.data-intelligence.foundation
 
-- **State:** building
-- **Task:** chunks
-- **Branch:** chunks
+- **State:** idle
+- **Task:** none
+- **Branch:** none
 
 ## Tasks
 
-1. [ ] chunks
+1. [x] chunks
 2. [ ] protocol
 3. [ ] events
 4. [ ] stack
 5. [ ] athena-mapping
 6. [ ] demo-dataset
-
-## Task brief · chunks
-
-**Problem**
-
-Mikoshi's `store`, `contexts`, `ingest`, `hybrid-search`, and `lineage` need one shape for what
-the pgvector load stores from docinfer's chunks, and the design leaves it open ("storing chunks by
-identity"). docinfer's run-directory lines and Bunrei's result batches carry the same library
-shapes, keyed by content, but nothing says how they become rows, how an embedding space is
-registered, or how lexical search reads multilingual text. Without the contract, Mikoshi's first
-migration decides it alone, and Bunrei and Mikoshi can drift.
-
-**Behaviors**
-
-1. The root's working context holds the `chunks` contract note: four records (embedding space,
-   source occurrence, chunk, embedding), what each holds and is keyed by, and who reads it. No
-   record carries a context, an item, or an input path.
-2. A chunk is keyed by its source text's SHA-256, the chunker identity, and its index in that
-   text, and holds its text, its span, and its text's SHA-256. A refused or failed chunk is stored
-   with its error and no embedding, and stays searchable by text.
-3. An embedding is keyed by its chunk text's SHA-256 and its space. Embeddings share one table
-   with an untyped vector column and a partial ANN index per space over a cast to the space's
-   dimensions. The note states that a query casts to use the index and that a vector of the wrong
-   dimensions is refused, citing sqlate's pgvector tests that prove both.
-4. A space's identity is docinfer's embeddings identity (served model, and the settings JSON with
-   its request version, input type, and document prefix) plus the dimensions. Metric and query
-   prefix are registered attributes. The chunker is not part of the space, and the note says why:
-   a re-chunk reuses the vectors of unchanged texts.
-5. A source occurrence is keyed by its input content's SHA-256 and its part ID. It holds the part
-   (SHA-256, content type, parent, depth, where) and its sources (kind, text SHA-256, stage
-   identity), so a blob's SHA-256 leads to its chunks with no context in between.
-6. Every chunk carries a stored tsvector generated with the `simple` configuration. The contract
-   has no language field, and the note states the cost: Han, Kana, Hangul, and Hebrew text gets
-   only whole-run lexical matches, which semantic search covers.
-7. Every stored field is mapped from docinfer's `Chunk`, `Source`, and `Batch` and docproc's
-   `Part`, linked at their released tags and never restated. The one mapping serves a
-   cmd/docinfer schema "2" chunk line and a Bunrei result batch, and vectors decode from base64
-   little-endian float32.
-8. The note says Mikoshi's `store` owns the schema, the pgvector declaration, and the migration,
-   and that the root holds no SQL. It names every task a change to the contract reaches.
-9. The context README's capability map lists the chunk contract as built, linking the note;
-   Bunrei's protocol and the event protocol stay planned.
-10. The coordinator's Mikoshi goal gains a `store` task before `contexts` that waits on this
-    contract, and the coordinator's blocking points list it.
-11. The root's check passes, the note within lint-context's 1,500-word note budget; the
-    coordinator's check passes.
-
-**Test seams**
-
-- The root's check: lint-context (budgets, capability map) and lint-references (links resolve).
-- Review against the cited sources: the spec-reviewer checks each record and field in the note
-  against docinfer's and docproc's shapes at their tags and against sqlate's pgvector live tests.
-  The root has no database tier, so nothing here executes the contract; Mikoshi's `store`
-  migration and its integration tests are its executable proof.
-
-**Slices**
-
-1. **The records and keys:** the contract note with the four records, their keys, the space's
-   identity, the `simple` tsvector, ownership, and the tasks it reaches, plus the capability map
-   entry (behaviors 1–6, 8, 9, 11).
-2. **The mapping:** each stored field traced to docinfer's and docproc's shapes at their tags, for
-   both a run-directory line and a result batch, with the vector's decoding (behavior 7).
-3. **The coordinator's `store` task:** Mikoshi's goal file gains `store` before `contexts`, and
-   the coordinator's data-intelligence note gains the blocking line, on the coordinator's own
-   branch and pull request, with the coordinator's check passing (behavior 10).
-
-**Out of scope**
-
-- SQL, migrations, and any Mikoshi or Bunrei code; `store` writes them.
-- Retrieval queries, reciprocal rank fusion, and how a context filters chunks (`hybrid-search`,
-  `contexts`).
-- The result-batch event's shape and cap (`events`).
-- Per-language text-search configurations and CJK lexical search (the `retrieval` backlog).
-- The design page's space tuple, a pending edit for sync.
-- Choosing set A's metric; `store` registers it.
-
-**Door**
-
-Two-way. The contract is prose, and the roadmap change is one coordinator pull request; nothing
-is released. Once Mikoshi's `store` migrates data, changing a key costs a migration there.
-
-## Progress
-
-slices 3/3 committed · standards ✓ (8fb3b77) · spec ✓ (gap closed in 8e31a4d) · editor ✓
-- plan, round 1, question 7: the architect authorized landing Mikoshi's `store` task in this session, through the coordinator's own pull request on `plan-capstone.data-intelligence.mikoshi`.
-- decided, slice 1: a refused or failed embedding's error is stored on the embedding record (text SHA-256, space) with no vector, since docinfer's `Chunk.Error` comes from one embeddings endpoint; the chunk itself stays searchable by text.
 
 ## Decisions
 
