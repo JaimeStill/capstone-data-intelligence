@@ -9,8 +9,10 @@ workspace, aligns the two sets of goals. Paths below are under Athena's `server/
 
 Athena would be Bunrei's second consumer, beside Mikoshi. It relies only on Bunrei's API: the
 Commands and Queries of [`protocol.md`](protocol.md), the events of [`events.md`](events.md), and
-GetOutput. It never reads Bunrei's state, and it keeps its own tables. Nothing here changes the
-[`chunks`](chunks.md), [`protocol`](protocol.md), or [`events`](events.md) contracts.
+GetOutput. It never reads Bunrei's state, and it keeps its own tables. It relies on the
+[`chunks`](chunks.md), [`protocol`](protocol.md), and [`events`](events.md) contracts as they
+stand; the space status, active space, pgvector type, and extraction scopes this mapping needed
+are stated there.
 
 ## Bunrei's fields onto Athena's chunks
 
@@ -24,7 +26,7 @@ is keyed by `(vault_id, chunk_id)` and hash-partitioned by vault. A batch's fiel
 |---|---|---|
 | the source's text SHA-256, the chunker from `started`'s `Profile.Chunker`, and the chunk's `index` | `chunk_id` | Athena's key is `<version>-<i>`, positional per document version; the contract's is content |
 | the chunk's `index` | `chunk_index` | the contract counts within one source text; Athena within the document |
-| none | `total_chunks` | Athena counts the chunks it keeps |
+| none | `total_chunks` | Athena counts every chunk it split, including those it drops |
 | `Job.Name` | `filename` | none |
 | `bunrei.job.queued`'s media type | `file_type` | none |
 | `Job.Size` | `file_size` | none |
@@ -84,8 +86,8 @@ Athena's chains are in
   reading on CPU alone, and verbatim text with no invented words.
 - **The document summary**, one summary-chain call over the document's text, maps onto
   document-scope extraction.
-- **The video summary and key moments**, one prompt over a timeline of transcript and frame
-  descriptions
+- **The video summary and key moments**, prompted over a timeline of transcript and frame
+  descriptions, window by window when it runs long
   ([`video_moments.go`](https://github.com/s2va/athena/blob/06ad4e1e670db27d61903a1fb00769055f66ade3/server/internal/document/video_moments.go#L261)),
   map onto video-timeline extraction.
 
