@@ -47,8 +47,7 @@ read it.
 
 A chunk is keyed by its source text's SHA-256, the chunker identity, and its index in that text.
 It holds its text, its span (byte offsets into the source text), and its text's SHA-256. A chunk
-the embeddings endpoint refused, or that failed, is stored with its error and no embedding, and
-stays searchable by text.
+is stored whether or not its embedding succeeded, and stays searchable by text.
 
 Every chunk carries a stored generated tsvector, `to_tsvector('simple', text)`. The contract has
 no language field, since no docproc or docinfer record carries one. The cost is CJK and Hebrew
@@ -62,9 +61,10 @@ Mikoshi's `ingest` writes chunks; `hybrid-search` reads their text, tsvector, an
 ### Embedding
 
 An embedding is keyed by its chunk text's SHA-256 and its space, so chunks with the same text share
-one vector per space. Embeddings share one table with an untyped `vector` column, and each space
-has a partial HNSW index over a cast to its dimensions, `embedding::vector(n)`, restricted to that
-space's rows.
+one vector per space. An embedding the endpoint refused, or that failed, is stored with its error
+and no vector: docinfer's error comes from one embeddings endpoint, so it belongs to one space.
+Embeddings share one table with an untyped `vector` column, and each space has a partial HNSW
+index over a cast to its dimensions, `embedding::vector(n)`, restricted to that space's rows.
 
 A query casts to use the index: a nearest-neighbour query that orders by the cast scans its space's
 index, and one without the cast misses every index. A vector of the wrong dimensions is refused in
@@ -75,6 +75,63 @@ for every metric
 `TestLive_InsertOfTheWrongDimensionIntoAnIndexedSpaceFails`).
 
 Mikoshi's `ingest` writes embeddings; `hybrid-search` reads them.
+
+## Mapping
+
+One mapping serves both inputs, since both carry the same shapes. A cmd/docinfer schema "2" chunk
+line,
+[`Line`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L116),
+inlines the part and source a batch indexes, plus a run-local input path that is not stored; the
+manifest's
+[`inputs`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L63)
+map that path to the input content's SHA-256. `Line` is internal to cmd/docinfer, so no other
+module imports it; its JSON is the contract. A Bunrei result batch is a
+[`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117):
+a chunk's `source` indexes its `sources`, and a source's `part` indexes its `parts`.
+
+### Space and chunker
+
+A space's identity is the `embeddings`
+[`Identity`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L38)
+and the dimensions. From a pipeline's
+[`Profile`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L53),
+they are `embeddings` and `dimensions`, and the query prefix is `embedding_query`'s `prefix`.
+From a run directory, the manifest's
+[`capabilities`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L74)
+entry whose `capability` is `embeddings` gives the identity, and
+[`embedding_space`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L100)
+gives `dimensions`, absent until the run ends. A run directory records no query convention, so it
+cannot supply the query prefix; that comes from a `Profile` or from `store`'s registration. Neither
+input carries the metric, which `store` registers.
+
+docinfer builds the chunker identity from the `chunk` capability, the splitter's `Model`, and its
+[`Settings()`](https://github.com/standards-lab/docinfer/blob/v0.3.0/chunk/chunk.go#L59)
+([`run.go:222`](https://github.com/standards-lab/docinfer/blob/v0.3.0/run.go#L222)).
+`Profile.Chunker` and `embedding_space.chunker` carry those settings alone, but the settings'
+`model` member is that same `Model`. So either input supplies the full identity: capability
+`chunk`, the model from the settings' `model`, and the settings as given. A batch carries neither
+the space nor the chunker; they come from the `Profile` of the pipeline that made it.
+
+### Fields
+
+- Source occurrence: the input content's SHA-256 is a line's `input` through the manifest's
+  `inputs`. A batch carries no input, since a
+  [`Source`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L134)'s
+  `Origin` never marshals and the batch holds only the parts its chunks come from, so a batch alone
+  cannot supply it. The part ID and the part are
+  [`Part`](https://github.com/standards-lab/docproc/blob/v0.9.0/dispatch/stage.go#L251)'s
+  `id`, `sha256`, `content_type`, `parent`, `depth`, and `where`. Each source is a `Source`'s
+  `kind`, `stage`, and text SHA-256: its `sha256`, or for an output, its `output`'s `sha256`.
+- Chunk: the source text's SHA-256 is its source's, as above; the chunker identity is as above.
+  The index is
+  [`Chunk`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L148)'s
+  `index`, the text and span are
+  [`chunk.Chunk`](https://github.com/standards-lab/docinfer/blob/v0.3.0/chunk/chunk.go#L24)'s
+  `text` and `span`, and the text's SHA-256 is `digest`.
+- Embedding: the chunk text's SHA-256 is `digest`, and the space is as above. The vector is
+  `vector`, decoded by
+  [`DecodeVector`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L161),
+  and absent on a refused or failed chunk; the error is `error`.
 
 ## Ownership
 
