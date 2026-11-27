@@ -14,14 +14,15 @@ chunks with no context in between.
 
 A space is keyed by its identity: docinfer's embeddings
 [`Identity`](https://github.com/standards-lab/docinfer/blob/v0.3.0/capability.go#L212) (the served
-model, and the settings JSON with its request version, input type `document`, and document
-prefix) plus the dimensions. It holds two registered attributes that are not identity: the metric,
-and the query prefix, from the query convention docinfer's `Profile` reports as
-`embedding_query`. A model change adds a space and re-embeds the stored chunks into it.
+model and the settings of its document convention) plus the dimensions. It holds two registered
+attributes that are not identity: the metric, and the query prefix, from the query convention
+docinfer's `Profile` reports as `embedding_query`. A model change adds a space and re-embeds the
+stored chunks into it.
 
 The chunker is not part of a space. docinfer keys an embedding by the embeddings identity and the
-chunk text's SHA-256 ([`embed.go:89`](https://github.com/standards-lab/docinfer/blob/v0.3.0/embed.go#L89)),
-and a chunking by the chunker identity and the source text's SHA-256
+chunk text's SHA-256
+([`embed.go:89`](https://github.com/standards-lab/docinfer/blob/v0.3.0/embed.go#L89)), and a
+chunking by the chunker identity and the source text's SHA-256
 ([`embed.go:39`](https://github.com/standards-lab/docinfer/blob/v0.3.0/embed.go#L39)), so a
 re-chunk reuses the vectors of every chunk text that didn't change. A space that named its chunker
 would re-embed them all.
@@ -91,12 +92,10 @@ a chunk's `source` indexes its `sources`, and a source's `part` indexes its `par
 
 ### Space and chunker
 
-A space's identity is the `embeddings`
-[`Identity`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L38)
-and the dimensions. From a pipeline's
+From a pipeline's
 [`Profile`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L53),
-they are `embeddings` and `dimensions`, and the query prefix is `embedding_query`'s `prefix`.
-From a run directory, the manifest's
+a space's identity and dimensions are `embeddings` and `dimensions`, and the query prefix is
+`embedding_query`'s `prefix`. From a run directory, the manifest's
 [`capabilities`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L74)
 entry whose `capability` is `embeddings` gives the identity, and
 [`embedding_space`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L100)
@@ -135,10 +134,10 @@ the space nor the chunker; they come from the `Profile` of the pipeline that mad
 
 ## Ownership
 
-Mikoshi's `store` task (`capstone.data-intelligence.mikoshi`) owns the schema, the pgvector
-declaration, a native-tier extension in capstone-mikoshi only, and the migration. This repository
-holds no SQL; the contract is this note, and `store`'s migration and its integration tests are its
-executable proof.
+Mikoshi's `store` task (`capstone.data-intelligence.mikoshi`) owns the schema, the migration,
+and the pgvector declaration, a native-tier extension declared in capstone-mikoshi only. This
+repository holds no SQL; the contract is this note, and `store`'s migration and its integration
+tests are its executable proof.
 
 A change to the contract reaches:
 
