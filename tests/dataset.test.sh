@@ -24,6 +24,8 @@ test_the_dataset_keeps_its_tour_share_records_and_live_files() {
     "$(count '.files[] | select(any(.contexts[]; startswith("share/")))')" 27
   assert_equal records "$(count '.records[]')" 8
   assert_equal "live files" "$(count '.files[] | select(.live == true)')" 2
+  assert_equal "share files in more than one branch" \
+    "$(count '.files[] | select([.contexts[] | select(startswith("share/")) | split("/")[1]] | unique | length > 1)')" 4
 }
 
 run_tests

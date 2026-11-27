@@ -370,7 +370,8 @@
       "id": "collection-plan",
       "name": "collection-plan.xlsx",
       "contexts": [
-        "share/intelligence"
+        "share/intelligence",
+        "share/operations-planning/exercise-quiet-harbor"
       ],
       "generated": "collection-plan.xlsx",
       "sha256": "1e1f4b34b062c23776a372c3d4feb36997ae720fa2e57613245192a262f8e3c5"
