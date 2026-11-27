@@ -95,8 +95,9 @@ is released. Once Mikoshi's `store` migrates data, changing a key costs a migrat
 
 ## Progress
 
-slices 0/3 committed · standards — · spec — · editor —
+slices 3/3 committed · standards ✓ (8fb3b77) · spec ✓ (gap closed in 8e31a4d) · editor ✓
 - plan, round 1, question 7: the architect authorized landing Mikoshi's `store` task in this session, through the coordinator's own pull request on `plan-capstone.data-intelligence.mikoshi`.
+- decided, slice 1: a refused or failed embedding's error is stored on the embedding record (text SHA-256, space) with no vector, since docinfer's `Chunk.Error` comes from one embeddings endpoint; the chunk itself stays searchable by text.
 
 ## Decisions
 
@@ -104,12 +105,7 @@ slices 0/3 committed · standards — · spec — · editor —
 - capstone: `events` waits on `.bunrei` `metadata` for the metadata shapes it carries.
 - capstone: items join contexts by reference and a context covers its descendants; chunks and embeddings stay keyed by content and carry no context.
 - capstone: `.showcase` follows this goal on this root; its `acceptance` waits on `.torii`, `.bunrei`, and `.mikoshi` having synced.
-- chunks: the contract is a note in the root with no SQL; Mikoshi's `store` migration is its one schema and executable proof. Rejected: a reference schema the root's check applies, which would be a second copy.
-- chunks: the contract maps docinfer's library shapes (`Chunk`, `Source`, `Batch`) and docproc's `Part`, which run-directory lines and Bunrei's result batches both carry; `outdir.Line` is internal to cmd/docinfer.
-- chunks: a chunk is keyed by source text SHA-256, chunker identity, and index; an embedding by text SHA-256 and space. Rejected: text SHA-256 alone, which drops span and index.
-- chunks: source occurrences (input content SHA-256 and part ID → part, source kind, text SHA-256, stage identity) are in the contract, keyed by content; input paths are not.
-- chunks: a space's identity is docinfer's embeddings identity plus dimensions; metric and query prefix are attributes. Rejected: the chunker in the space, which re-embeds on every re-chunk.
-- chunks: every chunk's tsvector is `to_tsvector('simple', text)`, with no language field. Rejected: per-language configurations, since no record carries a language; CJK lexical search is `retrieval`'s.
+- chunks: a Bunrei result batch alone lacks the input content's SHA-256 (`Source.Origin` is unserialized; the `/` part is often absent) and the producing `Profile` (space and chunker); `protocol` or `events` must carry both for Mikoshi to key source occurrences, chunks, and embeddings.
 - chunks: Mikoshi's `store`, before `contexts`, creates the database, declares pgvector, and writes the migration.
 
 ## Pending edits

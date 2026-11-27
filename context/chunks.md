@@ -1,12 +1,13 @@
 # The chunks contract
 
-What Mikoshi stores from docinfer's chunks, and how both services read it. docinfer's run-directory
-lines and Bunrei's result batches carry the same library shapes, [docinfer
-v0.3.0](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go) over [docproc
-v0.9.0](https://github.com/standards-lab/docproc/blob/v0.9.0/dispatch/stage.go); this contract
-turns them into four records. Every record is keyed by content. None carries a context, an item,
-or an input path: items join contexts by reference in Mikoshi, and a blob's SHA-256 leads to its
-chunks with no context in between.
+The chunks contract defines what Mikoshi stores from docinfer's chunks, which Bunrei's result
+batches deliver, and how Mikoshi reads them. docinfer's run-directory lines and Bunrei's result batches carry the same library
+shapes, those of [docinfer v0.3.0](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go),
+which embed parts from [docproc
+v0.9.0](https://github.com/standards-lab/docproc/blob/v0.9.0/dispatch/stage.go). The contract maps
+them onto four records, each keyed by content. None carries a context, an item, or an input path:
+items join contexts by reference in Mikoshi, and a blob's SHA-256 leads to its chunks with no
+context in between.
 
 ## Records
 
@@ -69,10 +70,11 @@ index over a cast to its dimensions, `embedding::vector(n)`, restricted to that 
 
 A query casts to use the index: a nearest-neighbour query that orders by the cast scans its space's
 index, and one without the cast misses every index. A vector of the wrong dimensions is refused in
-an indexed space, since the index's cast rejects it. sqlate's pgvector live tests prove all three,
+an indexed space, since the index's cast rejects it. sqlate's pgvector live tests prove all three
 for every metric
 ([`space_live_test.go`](https://github.com/standards-lab/sqlate/blob/postgres/pgvector/v0.1.0/postgres/pgvector/space_live_test.go#L123):
-`TestLive_QueryRepeatingTheCastScansItsSpaceIndex`, `TestLive_QueryWithoutTheCastMissesEveryIndex`,
+`TestLive_QueryRepeatingTheCastScansItsSpaceIndex`,
+`TestLive_QueryWithoutTheCastMissesEveryIndex`, and
 `TestLive_InsertOfTheWrongDimensionIntoAnIndexedSpaceFails`).
 
 Mikoshi's `ingest` writes embeddings; `hybrid-search` reads them.
@@ -86,7 +88,7 @@ inlines the part and source a batch indexes, plus a run-local input path that is
 manifest's
 [`inputs`](https://github.com/standards-lab/docinfer/blob/cmd/docinfer/v0.2.0/cmd/docinfer/internal/outdir/manifest.go#L63)
 map that path to the input content's SHA-256. `Line` is internal to cmd/docinfer, so no other
-module imports it; its JSON is the contract. A Bunrei result batch is a
+module imports it; the contract relies on its JSON. A Bunrei result batch is a
 [`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117):
 a chunk's `source` indexes its `sources`, and a source's `part` indexes its `parts`.
 
@@ -121,8 +123,8 @@ the space nor the chunker; they come from the `Profile` of the pipeline that mad
   [`Part`](https://github.com/standards-lab/docproc/blob/v0.9.0/dispatch/stage.go#L251)'s
   `id`, `sha256`, `content_type`, `parent`, `depth`, and `where`. Each source is a `Source`'s
   `kind`, `stage`, and text SHA-256: its `sha256`, or for an output, its `output`'s `sha256`.
-- Chunk: the source text's SHA-256 is its source's, as above; the chunker identity is as above.
-  The index is
+- Chunk: the source text's SHA-256 is its source's text SHA-256, as above, and the chunker
+  identity is as "Space and chunker" gives it. The index is
   [`Chunk`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L148)'s
   `index`, the text and span are
   [`chunk.Chunk`](https://github.com/standards-lab/docinfer/blob/v0.3.0/chunk/chunk.go#L24)'s
@@ -142,8 +144,9 @@ tests are its executable proof.
 A change to the contract reaches:
 
 - `.mikoshi`: `store`, `contexts`, `ingest`, `hybrid-search`, and `lineage`.
-- `.foundation` `events` and `.bunrei` `api`, insofar as Bunrei's result batches carry docinfer's
+- `.foundation` `events` and `.bunrei` `api`, because Bunrei's result batches carry docinfer's
   [`Batch`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L117) (its parts,
   sources, and chunks).
-- `.foundation` `protocol` and `events`, which between them carry what a batch alone lacks: the
-  input content's SHA-256 and the processing profile that names the space and the chunker.
+- `.foundation` `protocol`, because it and `events` must between them carry what a batch alone
+  lacks: the input content's SHA-256, and the processing profile that names the space and the
+  chunker.
