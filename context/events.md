@@ -101,9 +101,8 @@ A metadata record is a `bunrei.job.output` whose output's `media_type` is one of
 ([`MediaOfficeMetadata` and the rest](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L221)),
 [`MediaMail`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L207), or
 [`MediaOneNote`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L210).
-The event carries the record's SHA-256, never its content, which GetOutput streams; an inference
-likewise carries its text's SHA-256. A mail message's output carries
-[`in_reply_to`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L173) and
+The event carries the record's SHA-256, never its content, which GetOutput streams. A mail
+message's output carries [`in_reply_to`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L173) and
 [`references`](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go#L176) in
 its `meta` when the message has them.
 
@@ -157,10 +156,9 @@ digest covers the chunks' digests, so it proves which chunk texts arrived, not t
 
 ## Mikoshi's events
 
-Each of Mikoshi's public commands emits one event, typed `mikoshi.<domain>[.<element>].<operation>`,
-its data the entity's stored state (`standards-lab/context/messaging.md`, "Which commands emit
-events"). Context activity is these events on contexts and items, each with the context it changed
-as `subject`; it has no event of its own.
+Mikoshi's commands emit their events as `standards-lab/context/messaging.md`, "Which commands emit
+events", gives. Context activity is those events on contexts and items, each with the context it
+changed as `subject`; it has no event of its own.
 
 | Type | Command |
 |---|---|
@@ -214,7 +212,8 @@ them.
 
 ## Ownership
 
-A change to the event protocol reaches:
+`.bunrei` `event-stream` and `.mikoshi` `ingest` build against this note, and their tests are its
+executable proof. A change to the event protocol reaches:
 
 - `.bunrei`: `state`, `jobs`, `event-stream`, and the task that lets go-core's `Raise` set
   extensions.
