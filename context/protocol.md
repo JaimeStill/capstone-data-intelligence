@@ -11,9 +11,8 @@ note's, and the job's events are `.foundation` `events`'.
 
 Queries and Commands go over HTTP, served through go-web-sdk's base module. NATS carries only
 Events, which `events` designs. A refusal is an RFC 9457 problem, go-web-sdk's
-[`Problem`](https://github.com/standards-lab/go-web-sdk/blob/v0.18.0/problem.go#L22) served as
-`application/problem+json`. go-web-sdk mints no type URIs, so Bunrei names its own; which ones is
-`.bunrei` `api`'s.
+[`Problem`](https://github.com/standards-lab/go-web-sdk/blob/v0.18.0/problem.go#L22).
+go-web-sdk mints no type URIs, so Bunrei names its own; which ones is `.bunrei` `api`'s.
 
 ## The client module
 
@@ -60,9 +59,7 @@ type Attempt struct { Done *job.Done `json:"done,omitempty"` }
 `docinfer.Extract` is docinfer's
 [`Extract`](https://github.com/standards-lab/docinfer/blob/v0.3.0/capability.go#L138),
 `docinfer.Profile` its
-[`Profile`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L53), whose
-identities are each an
-[`Identity`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L38), and `job.Done`
+[`Profile`](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go#L53), and `job.Done`
 its [`Done`](https://github.com/standards-lab/docinfer/blob/v0.3.0/job/job.go#L249), all at
 v0.3.0.
 
@@ -102,9 +99,8 @@ settings, each 4 MiB by default. The default is a starting point; measured perfo
 A request names a versioned processing profile from Bunrei's configuration, never a model. Each
 profile resolves to a docinfer pipeline, and ListProfiles returns that pipeline's `Profile`.
 
-The extraction spec is docinfer's `Extract`: a name, a prompt, and the JSON Schema the reply
-follows. It is optional. Bunrei refuses one that marshals past 256 KiB, so the queued event that
-carries it stays within NATS's 1 MB `max_payload`.
+The extraction spec is docinfer's `Extract`, and it is optional. Bunrei refuses one that marshals
+past 256 KiB, so the queued event that carries it stays within NATS's 1 MB `max_payload`.
 
 ## What a batch lacks
 

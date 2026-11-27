@@ -14,11 +14,10 @@ A creating POST
 carries:
 
 - Upload-Complete
-  ([§4.2.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-4.2.1)),
-  an sf-Boolean.
+  ([§4.2.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-4.2.1)).
 - Upload-Length
   ([§4.3.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-4.3.1)),
-  an sf-Integer, when the length is known.
+  when the length is known.
 - Content-Type, the file's media type.
 - Repr-Digest, the file's SHA-256 (see "Digests").
 - Content-Disposition, the file's name
@@ -53,8 +52,7 @@ The append that ends the file carries Upload-Complete: ?1.
 An append whose Upload-Offset is not the upload's offset is a 409 (Conflict) with Upload-Complete:
 ?0 and the current offset in Upload-Offset
 ([§8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.2)).
-Its body is an RFC 9457 problem of the type `mismatching-upload-offset`, with `expected-offset`
-and `provided-offset`
+Its body is an RFC 9457 problem of the type `mismatching-upload-offset`
 ([§14.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-14.1)).
 
 ## Resumption and cancellation
@@ -96,11 +94,10 @@ the whole file, and Content-Digest ([§2](https://www.rfc-editor.org/rfc/rfc9530
 append covers that chunk.
 
 Each value is a Structured Field Byte Sequence
-([RFC 9651 §3.3.5](https://www.rfc-editor.org/rfc/rfc9651#section-3.3.5)): the 32-byte digest in
-base64 between colons, as in `sha-256=:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=:`. Every other
-field carries a SHA-256 in lowercase hex, `Job.SHA256` among them. The conversion decodes the
-base64 to the 32 bytes and writes them as lowercase hex, and the reverse encodes the bytes from
-the hex as base64.
+([RFC 9651 §3.3.5](https://www.rfc-editor.org/rfc/rfc9651#section-3.3.5)), as in
+`sha-256=:47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=:`. Every other field carries a SHA-256 in
+lowercase hex, `Job.SHA256` among them. The conversion decodes the base64 to the 32 bytes and
+writes them as lowercase hex, and the reverse encodes the bytes from the hex as base64.
 
 An append whose chunk mismatches its Content-Digest is refused, and the offset doesn't move. The
 handler appends a chunk only once its digest matches, so an interrupted append, whose digest can't
@@ -108,6 +105,11 @@ be checked, appends nothing. When the upload completes, the handler checks the w
 the creation's Repr-Digest. A mismatch fails the upload: the completing request's final response
 is an error with Upload-Complete: ?1, which resuming cannot fix
 ([§8.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.1)).
+
+## What the note leaves out
+
+The routes, the store, the handler's implementation, and the version numbers of the releases are
+the tasks' that build them: `.bunrei` `upload` and `.mikoshi` `browser-upload`.
 
 ## Ownership
 
@@ -127,11 +129,6 @@ go-web-sdk and web-app-sdk each pin the draft revision they implement under roll
 datatracker's latest revision of the draft and its RFC number, if it has one, and reports the pin
 trailing. A new revision becomes the next task's upgrade slice, which moves both libraries
 together.
-
-## What the note leaves out
-
-The routes, the store, the handler's implementation, and the version numbers of the releases are
-the tasks' that build them: `.bunrei` `upload` and `.mikoshi` `browser-upload`.
 
 A change to the upload reaches:
 
