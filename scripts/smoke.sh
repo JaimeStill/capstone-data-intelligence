@@ -4,7 +4,9 @@
 # JetStream stream on file storage and deletes it, speaking JetStream's API over the NATS text
 # protocol through the container's busybox nc. postgres-bunrei and postgres-mikoshi each create the
 # vector extension through the container's psql inside a transaction they roll back, so neither
-# server keeps it.
+# server keeps it. seaweedfs creates a bucket and puts an object through the container's curl,
+# signing each request with --aws-sigv4, restarts the service, reads the object back, and deletes
+# both; a bucket left by an earlier failed run is emptied and deleted first.
 # Run it through `mise run stack:smoke` once `mise run stack:up` has the stack healthy.
 #
 # usage: scripts/smoke.sh
@@ -58,5 +60,30 @@ smoke_postgres() {
 	done
 }
 
+s3() {
+	docker compose exec -T seaweedfs curl --silent --show-error --fail \
+		--aws-sigv4 aws:amz:us-east-1:s3 --user admin:secret "$@"
+}
+
+smoke_seaweedfs() {
+	local bucket=http://127.0.0.1:8333/smoke content="smoke $$ $RANDOM" output
+	s3 --output /dev/null -X DELETE "$bucket/object" 2>/dev/null || true
+	s3 --output /dev/null -X DELETE "$bucket" 2>/dev/null || true
+	output=$(s3 -X PUT "$bucket" 2>&1) || fail "seaweedfs: bucket create failed: $output"
+	output=$(s3 -X PUT --data-binary "$content" "$bucket/object" 2>&1) ||
+		fail "seaweedfs: object put failed: $output"
+	output=$(docker compose restart seaweedfs 2>&1) || fail "seaweedfs: restart failed: $output"
+	output=$(docker compose up -d --wait seaweedfs 2>&1) ||
+		fail "seaweedfs: not healthy after restart: $output"
+	output=$(s3 "$bucket/object" 2>&1) || fail "seaweedfs: object get failed: $output"
+	if [ "$output" != "$content" ]; then
+		fail "seaweedfs: object read back as '$output', not '$content'"
+	fi
+	output=$(s3 -X DELETE "$bucket/object" 2>&1) || fail "seaweedfs: object delete failed: $output"
+	output=$(s3 -X DELETE "$bucket" 2>&1) || fail "seaweedfs: bucket delete failed: $output"
+	echo "smoke: seaweedfs: an object survived a restart, then it and its bucket were deleted"
+}
+
 smoke_nats
 smoke_postgres
+smoke_seaweedfs

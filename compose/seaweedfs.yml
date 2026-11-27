@@ -1,0 +1,12 @@
+# The development stack's SeaweedFS S3 gateway.
+services:
+  seaweedfs:
+    build:
+      context: seaweedfs
+    ports:
+      - "127.0.0.1:${SEAWEEDFS_S3_PORT:-8335}:8333"
+    volumes:
+      - capstone-data-intelligence-seaweedfs:/data
+
+volumes:
+  capstone-data-intelligence-seaweedfs:

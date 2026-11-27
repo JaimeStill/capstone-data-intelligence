@@ -5,3 +5,4 @@ name: capstone-data-intelligence
 include:
   - compose/nats.yml
   - compose/postgres.yml
+  - compose/seaweedfs.yml
