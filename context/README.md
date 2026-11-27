@@ -17,7 +17,7 @@ then `capstone.data-intelligence.showcase`.
 - **Chunk contract** (built): the records Mikoshi stores from docinfer's chunks and their embedding spaces, [`chunks.md`](chunks.md).
 - **Bunrei's protocol** (built): the Queries and Commands Bunrei's callers send it, and the types they exchange, [`protocol.md`](protocol.md).
 - **Resumable upload** (built): the chunked HTTP upload, resumable after a dropped connection, that Bunrei and Mikoshi serve and their clients send, [`upload.md`](upload.md).
-- **Event protocol** (planned): `capstone.data-intelligence.foundation`, `events`.
+- **Event protocol** (built): the events Bunrei and Mikoshi publish, their envelope and lineage, and the manifest that proves a job's results arrived whole, [`events.md`](events.md).
 - **Compose stack** (planned): `capstone.data-intelligence.foundation`, `stack`.
 - **Demo dataset** (planned): `capstone.data-intelligence.foundation`, `demo-dataset`.
 - **Acceptance run** (planned): `capstone.data-intelligence.showcase`, `acceptance`.

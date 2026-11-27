@@ -5,12 +5,12 @@ types they exchange. It states only what Bunrei and its callers rely on. It take
 docproc's Bunrei draft at
 [fab8e70](https://github.com/standards-lab/docproc/blob/fab8e70fe0a85f08cbfdffc738944bcf63f58117/context/bunrei.md),
 except where this note settles otherwise. The [`upload`](upload.md) note covers the resumable
-upload, and `.foundation` `events` designs the job's events.
+upload, and the [`events`](events.md) note the job's events.
 
 ## Transport
 
 Queries and Commands go over HTTP, served through go-web-sdk's base module. NATS carries only
-Events, which `events` designs. A refusal is an RFC 9457 problem, go-web-sdk's
+Events, which [`events`](events.md) covers. A refusal is an RFC 9457 problem, go-web-sdk's
 [`Problem`](https://github.com/standards-lab/go-web-sdk/blob/v0.18.0/problem.go#L22).
 go-web-sdk mints no type URIs, so Bunrei names its own, and `.bunrei` `api` chooses them.
 
@@ -65,8 +65,8 @@ v0.3.0.
 
 A job covers one input and is the unit of retry. Its ID is a UUIDv7. `Job.SHA256` is the input
 content's SHA-256 in lowercase hex. `Name` is the document's file name, from Submit's `Name` or
-the upload's `Content-Disposition`. `Manifest` is set once the job completes. `events` defines
-what its batches, chunks, and digest count, and how a consumer checks them.
+the upload's `Content-Disposition`. `Manifest` is set once the job completes.
+[`events.md`](events.md), "The manifest", defines what it counts and how a consumer checks it.
 
 ## Commands
 
@@ -108,8 +108,8 @@ past 256 KiB, so the queued event that carries it stays within NATS's 1 MB `max_
 A result batch carries neither its input content's SHA-256 nor the producing profile
 ([`chunks.md`](chunks.md), "Fields" and "Space and chunker"). A consumer takes the SHA-256, the
 versioned profile name, and the file name from the `Job`. It takes the resolved `Profile`, which
-names the space and the chunker, from each attempt's `bunrei.job.started`, which `.foundation`
-`events` will design to carry it.
+names the space and the chunker, from each attempt's `bunrei.job.started`
+([`events.md`](events.md), "Bunrei's job types").
 
 ## What the protocol leaves out
 
@@ -124,5 +124,5 @@ tests are the note's executable proof. A change to the protocol reaches:
 
 - `.bunrei`: `upload` and `api`.
 - `.mikoshi`: `browser-upload`, `items`, and `ingest`.
-- `.foundation`: `events`, which puts the resolved `Profile` on `started`.
+- `.foundation`: [`events`](events.md), whose `started` carries the resolved `Profile`.
 - `.showcase`: `presentation`.
