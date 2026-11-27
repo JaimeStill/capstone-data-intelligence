@@ -1,4 +1,5 @@
 # The development stack's NATS with JetStream on file storage.
+# See context/stack.md
 services:
   nats:
     build:

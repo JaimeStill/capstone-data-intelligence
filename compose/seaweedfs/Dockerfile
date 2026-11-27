@@ -1,5 +1,6 @@
 # The development stack's SeaweedFS S3 gateway, with the published development credentials
 # admin/secret.
+# See context/stack.md
 # See architecture/principles/development-secrets.md
 FROM chrislusf/seaweedfs:4.55
 

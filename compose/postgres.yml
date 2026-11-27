@@ -1,5 +1,6 @@
 # The development stack's PostgreSQL servers with pgvector, one for Bunrei and one for Mikoshi,
 # both built from compose/postgres/Dockerfile.
+# See context/stack.md
 services:
   postgres-bunrei:
     build:

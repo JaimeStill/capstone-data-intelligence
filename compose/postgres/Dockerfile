@@ -1,5 +1,6 @@
 # The development stack's PostgreSQL 19 with pgvector built from source, run by Bunrei's and
 # Mikoshi's servers alike.
+# See context/stack.md
 # See architecture/standards/go-elemental/principles/database-extensions.md
 FROM postgres:19.0-alpine
 

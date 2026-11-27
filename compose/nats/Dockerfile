@@ -1,5 +1,5 @@
 # The development stack's NATS with JetStream on file storage.
-# See architecture/principles/rolling-currency.md
+# See context/stack.md
 FROM nats:2.15.3-alpine
 
 CMD ["-js", "-sd", "/data", "-m", "8222"]
