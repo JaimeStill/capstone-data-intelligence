@@ -3,20 +3,18 @@
 The event protocol is the events Bunrei and Mikoshi publish: their envelope and lineage,
 Bunrei's job events, and the manifest that proves a job's results arrived whole. It states only
 what Bunrei, Mikoshi, and the browser rely on. The envelope is go-core's
-[`event`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/doc.go) at v0.12.0, and the
+[`event`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/doc.go) at v0.13.0, and the
 data are the shapes of [docproc v0.10.0](https://github.com/standards-lab/docproc/blob/v0.10.0/dispatch/shapes.go)
 and [docinfer v0.3.0](https://github.com/standards-lab/docinfer/blob/v0.3.0/shapes.go), linked
-where a type carries one. It supersedes the event table of docproc's Bunrei draft at
-[v0.10.0](https://github.com/standards-lab/docproc/blob/v0.10.0/context/bunrei.md), "Events" and
-"Results and the manifest". [`protocol.md`](protocol.md) holds the Queries and Commands and the
+where a type carries one. [`protocol.md`](protocol.md) holds the Queries and Commands and the
 `Manifest` type.
 
 ## Envelope
 
 Every event is a CloudEvents 1.0 event in binary content mode, a go-core
-[`Event`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/event.go#L18) mapped by
-[`Encode`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/codec.go#L22) and
-[`Decode`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/codec.go#L56).
+[`Event`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/event.go#L18) mapped by
+[`Encode`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/codec.go#L22) and
+[`Decode`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/codec.go#L56).
 
 - `id` is a UUIDv7.
 - `source` is the service, `bunrei` or `mikoshi`, never a replica's.
@@ -159,8 +157,8 @@ digest covers the chunks' digests, so it proves which chunk texts arrived, not t
 ## Mikoshi's events
 
 Mikoshi's commands emit their events as `standards-lab/context/messaging.md`, "Which commands emit
-events", gives. Context activity is those events on contexts and items, each with the context it
-changed as `subject`; it has no event of its own.
+events", gives. An item's event has the item's id as `subject`, the reset the state it resets
+to, and the others the context they changed. Context activity has no event of its own.
 
 | Type | Command |
 |---|---|
@@ -170,22 +168,25 @@ changed as `subject`; it has no event of its own.
 | `mikoshi.context.deleted` | delete, with its confirmed subtree |
 | `mikoshi.context.item.added` | add an item by reference |
 | `mikoshi.context.item.removed` | remove an item's reference |
+| `mikoshi.item.created` | create an item |
+| `mikoshi.item.deleted` | delete an item |
+| `mikoshi.database.reset` | the admin reset |
 
-- **A subtree delete is one event**, on the named context; its descendants and references raise
-  none.
+- **A delete is one event**, on the named context or item; its descendants and references
+  raise none.
+- **`mikoshi.item.created` covers every item type**, its data carrying the `type`.
+  `context-tools`' analyses are planned to emit it, adding no type.
 - **Query contexts** check each `mikoshi.context.item.added` against their filters, and **standing
   analyses** rerun on the events whose `subject` lies in their context's subtree.
-- **Creating an item or an analysis** follows the same rule; `items` and `standing-analyses` name
-  those types.
 - **A committed batch's event**, written in the batch's transaction, has the `id` of its
   `bunrei.job.batch` as `causationid`, joining Mikoshi's lineage to the job's.
+- **At `mikoshi.database.reset`** a consumer drops its copy of Mikoshi's data; the stream stays.
 
 ## How the extensions are set
 
-Bunrei sets the extensions on each job `Event` it appends. Mikoshi raises its events into
-its outbox through go-core's
-[`EventKind.Raise`](https://github.com/standards-lab/go-core/blob/v0.12.0/event/kind.go#L36),
-which at v0.12.0 takes none; Mikoshi sets them once a `.bunrei` task adds them to `Raise`.
+Bunrei sets the extensions on each job `Event` it appends. Mikoshi sets them in the go-core
+[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L35) each
+`EventKind.Raise` takes.
 
 ## The browser's transport
 
@@ -208,16 +209,14 @@ as [spike-html-apps built it](https://github.com/JaimeStill/spike-html-apps/blob
 
 ## What the note leaves out
 
-Stream names, retentions, consumer names, and the relay's routes are left to the tasks that build
-them.
+Stream names, retentions, consumers, and the relay's routes are left to their tasks.
 
 ## Ownership
 
 `.bunrei` `event-stream` and `.mikoshi` `ingest` build against this note, and their tests are its
 executable proof. A change to the event protocol reaches:
 
-- `.bunrei`: `state`, `jobs`, `event-stream`, `document-extraction`, and the task that lets
-  go-core's `Raise` set extensions.
-- `.mikoshi`: `items`, `ingest`, `standing-analyses`, `lineage`, `signal-flow`, and the task that
-  builds Mikoshi's SSE relay.
+- `.bunrei`: `state`, `jobs`, `event-stream`, and `document-extraction`.
+- `.mikoshi`: `items`, `event-extensions`, `context-events`, `ingest`, `context-tools`,
+  `standing-analyses`, `lineage`, `signal-flow`, and `event-relay`.
 - `.showcase`: `presentation`.

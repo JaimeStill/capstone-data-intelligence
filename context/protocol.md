@@ -147,9 +147,11 @@ part of the protocol.
 ## Ownership
 
 `.bunrei` `api` builds the `client` module and Bunrei's routes against this note, and its client
-tests are the note's executable proof. A change to the protocol reaches:
+tests are the note's executable proof. Bunrei's chunk store over its blob storage is Bunrei's own,
+and go-web-sdk's `uploadtest` proves it ([`upload.md`](upload.md), "Ownership"). A change to the
+protocol reaches:
 
-- `.bunrei`: `upload`, `document-extraction`, `api`, and `prompts`.
-- `.mikoshi`: `browser-upload`, `items`, and `ingest`.
+- `.bunrei`: `document-extraction`, `api`, and `prompts`.
+- `.mikoshi`: `upload`, `browser-upload`, `items`, and `ingest`.
 - `.foundation`: [`events`](events.md), whose `started` carries the resolved `Profile`.
 - `.showcase`: `presentation`.
