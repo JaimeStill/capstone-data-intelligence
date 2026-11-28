@@ -69,10 +69,11 @@ run", says how to run Mikoshi for it. `mise run check` never runs it.
 
 The suite builds only the context tree. `.showcase` `demo-load`, which waits on `.mikoshi`
 `items` and `ingest`, is planned to load the files as items, the authored records, and the
-references into that tree, and to review the share, tour, and authored lists again.
+references into that tree, and to review the share, tour, and authored lists again. A record
+loads without its `annotates` link, since a Mikoshi record keeps no link to the files it
+annotates.
 
 ## Assumptions
 
-- Assumes `.mikoshi` `items` declares `route`, `kind`, and `duration` as filter fields. The check
-  accepts no other field, and Mikoshi checks a filter's field names only once `items` declares
-  them.
+- Mikoshi checks a filter's field names against the items read's field contract, which takes
+  `route`, `kind`, and `duration` and refuses any other field. The check accepts the same three.
