@@ -158,7 +158,7 @@ digest covers the chunks' digests, so it proves which chunk texts arrived, not t
 
 Mikoshi's commands emit their events as `standards-lab/context/messaging.md`, "Which commands emit
 events", gives. An item's event has the item's id as `subject`, the reset the state it resets
-to, and the others the context they changed. Context activity has no event of its own.
+to, a chat turn's the context of its session, and the others the context they changed.
 
 | Type | Command |
 |---|---|
@@ -171,22 +171,18 @@ to, and the others the context they changed. Context activity has no event of it
 | `mikoshi.item.created` | create an item |
 | `mikoshi.item.deleted` | delete an item |
 | `mikoshi.database.reset` | the admin reset |
+| `mikoshi.chat.turn.committed` | a chat answer's committed model call |
 
 - **A delete is one event**, on the named context or item; its descendants and references
   raise none.
 - **`mikoshi.item.created` covers every item type**, its data carrying the `type`.
-  `context-tools`' analyses are planned to emit it, adding no type.
+  `analyses` will emit it, adding no type.
 - **Query contexts** check each `mikoshi.context.item.added` against their filters, and **standing
-  analyses** rerun on the events whose `subject` lies in their context's subtree.
+  analyses** rerun on the changing events whose `subject` lies in their context's subtree. A chat
+  turn is activity, not a change, so they ignore it; `signal-flow` and `event-relay` read it.
 - **A committed batch's event**, written in the batch's transaction, has the `id` of its
   `bunrei.job.batch` as `causationid`, joining Mikoshi's lineage to the job's.
 - **At `mikoshi.database.reset`** a consumer drops its copy of Mikoshi's data; the stream stays.
-
-## How the extensions are set
-
-Bunrei sets the extensions on each job `Event` it appends. Mikoshi sets them in the go-core
-[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L35) each
-`EventKind.Raise` takes.
 
 ## The browser's transport
 
@@ -218,5 +214,5 @@ executable proof. A change to the event protocol reaches:
 
 - `.bunrei`: `state`, `jobs`, `event-stream`, and `document-extraction`.
 - `.mikoshi`: `items`, `event-extensions`, `context-events`, `ingest`, `context-tools`,
-  `standing-analyses`, `lineage`, `signal-flow`, and `event-relay`.
+  `analyses`, `standing-analyses`, `lineage`, `signal-flow`, and `event-relay`.
 - `.showcase`: `presentation`.
