@@ -213,6 +213,6 @@ Stream names, retentions, consumers, and the relay's routes are left to their ta
 executable proof. A change to the event protocol reaches:
 
 - `.bunrei`: `state`, `jobs`, `event-stream`, and `document-extraction`.
-- `.mikoshi`: `items`, `event-extensions`, `context-events`, `ingest`, `context-tools`,
+- `.mikoshi`: `items`, `event-extensions`, `context-events`, `ingest`, `context-chat`,
   `analyses`, `standing-analyses`, `lineage`, `signal-flow`, and `event-relay`.
 - `.showcase`: `presentation`.
