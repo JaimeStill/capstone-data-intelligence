@@ -185,7 +185,7 @@ changed. Context activity has no event of its own.
 ## How the extensions are set
 
 Bunrei sets the extensions on each job `Event` it appends. Mikoshi sets them in go-core's
-[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L34), which
+[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L35), which
 `.mikoshi` `event-extensions` added to `EventKind.Raise` at v0.13.0.
 
 ## The browser's transport
