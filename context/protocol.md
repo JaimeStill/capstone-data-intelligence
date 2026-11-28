@@ -148,7 +148,8 @@ part of the protocol.
 
 `.bunrei` `api` builds the `client` module and Bunrei's routes against this note, and its client
 tests are the note's executable proof. Bunrei's chunk store over its blob storage is Bunrei's own,
-and go-web-sdk's `uploadtest` proves it ([`upload.md`](upload.md), "Ownership"). A change to the protocol reaches:
+and go-web-sdk's `uploadtest` proves it ([`upload.md`](upload.md), "Ownership"). A change to the
+protocol reaches:
 
 - `.bunrei`: `document-extraction`, `api`, and `prompts`.
 - `.mikoshi`: `upload`, `browser-upload`, `items`, and `ingest`.

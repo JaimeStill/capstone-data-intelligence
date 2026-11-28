@@ -157,8 +157,8 @@ digest covers the chunks' digests, so it proves which chunk texts arrived, not t
 ## Mikoshi's events
 
 Mikoshi's commands emit their events as `standards-lab/context/messaging.md`, "Which commands emit
-events", gives. An item's event has the item's id as `subject`, and the others the context they
-changed. Context activity has no event of its own.
+events", gives. An item's event has the item's id as `subject`, the reset the state it resets
+to, and the others the context they changed. Context activity has no event of its own.
 
 | Type | Command |
 |---|---|
@@ -172,10 +172,10 @@ changed. Context activity has no event of its own.
 | `mikoshi.item.deleted` | delete an item |
 | `mikoshi.database.reset` | the admin reset |
 
-- **A delete is one event**, on the named context or item; the subtree and references it
-  withdraws raise none.
+- **A delete is one event**, on the named context or item; its descendants and references
+  raise none.
 - **`mikoshi.item.created` covers every item type**, its data carrying the `type`.
-  `context-events` names it; `context-tools`' analyses emit it and add no type.
+  `context-tools`' analyses are planned to emit it, adding no type.
 - **Query contexts** check each `mikoshi.context.item.added` against their filters, and **standing
   analyses** rerun on the events whose `subject` lies in their context's subtree.
 - **A committed batch's event**, written in the batch's transaction, has the `id` of its
@@ -184,9 +184,9 @@ changed. Context activity has no event of its own.
 
 ## How the extensions are set
 
-Bunrei sets the extensions on each job `Event` it appends. Mikoshi sets them in go-core's
-[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L35), which
-`.mikoshi` `event-extensions` added to `EventKind.Raise` at v0.13.0.
+Bunrei sets the extensions on each job `Event` it appends. Mikoshi sets them in the go-core
+[`RaiseOptions`](https://github.com/standards-lab/go-core/blob/v0.13.0/event/kind.go#L35) each
+`EventKind.Raise` takes.
 
 ## The browser's transport
 

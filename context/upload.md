@@ -108,9 +108,9 @@ An append whose chunk mismatches its Content-Digest is refused, and the offset d
 handler appends a chunk only once its digest matches, so an interrupted append, whose digest can't
 be checked, appends nothing, departing deliberately from the SHOULD in
 [§8.2](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.2).
-When the upload completes, the handler checks the whole file against
-the creation's Repr-Digest. A mismatch fails the upload: the completing request's final response
-is an error with Upload-Complete: ?1, which resuming cannot fix
+When the upload completes, the handler checks the whole file against the creation's Repr-Digest.
+A mismatch fails the upload: the completing request's final response is an error with
+Upload-Complete: ?1, which resuming cannot fix
 ([§8.1](https://datatracker.ietf.org/doc/html/draft-ietf-httpbis-resumable-upload-16#section-8.1)).
 
 ## What the note leaves out
@@ -121,13 +121,13 @@ The routes, the stores, and the handler's implementation are left to the tasks t
 ## Ownership
 
 - go-web-sdk's base module holds the server handler, built on net/http behind a chunk-store
-  interface, and the Go append client, released alone as v0.19.0; `sse-writer` comes at a later
-  minor. The handler reads bodies of unknown length itself and builds on v0.19.0's
+  interface, and the Go append client, released alone as v0.19.0; `.mikoshi` `sse-writer` adds the SSE
+  writer in a later minor. The handler reads bodies of unknown length itself and builds on v0.19.0's
   [`Transfer`](https://github.com/standards-lab/go-web-sdk/blob/v0.19.0/transfer.go#L29).
 - go-web-sdk holds the in-memory store and `uploadtest`, the store conformance suite; each
   service's store, shared across its replicas, is its own.
-- web-app-sdk holds the browser client in `./upload.js`, from v0.2.0. tusd is no interop peer: it
-  speaks interop versions 3–6 only, and draft-16's is 11.
+- web-app-sdk holds the browser client in `./upload.js`, from v0.2.0. tusd is not an interop
+  peer: it speaks interop versions 3–6 only, and draft-16's is 11.
 - Bunrei mounts the handler on its API with a store over its blob storage, and its `client` module
   wraps go-web-sdk's client.
 - Mikoshi's `items` mounts the same handler with its own store, which keeps the chunks in
@@ -137,8 +137,8 @@ The routes, the stores, and the handler's implementation are left to the tasks t
 go-web-sdk pins the draft revision it implements as `DraftRevision`, and web-app-sdk as
 `DRAFT_REVISION`, under rolling currency (`architecture/principles/rolling-currency.md`). Each
 library's currency command compares its pin with datatracker's latest revision of the draft and
-its RFC number, if it has one, and reports the pin trailing. A new revision becomes the next task's upgrade slice, which moves both libraries
-together.
+its RFC number, if it has one, and reports the pin trailing. A new revision becomes the next
+task's upgrade slice, which moves both libraries together.
 
 A change to the upload reaches:
 
